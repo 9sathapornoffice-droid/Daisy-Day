@@ -437,7 +437,7 @@ body {
   align-items: center;
   text-align: center;
   padding: 24px 20px;
-  background: url('./assets/images/daisy-day-banner.jpg') center center / cover no-repeat;
+  background: linear-gradient(135deg, #fdf4f8 0%, #ffebee 50%, #fff8e1 100%) center center / cover no-repeat;
   overflow: hidden;
 }
 
