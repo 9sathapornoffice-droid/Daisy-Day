@@ -1,0 +1,1370 @@
+
+// ============================================================================
+// DAISY DAY - COMPREHENSIVE STOREFRONT & ADMIN STUDIO LOGIC
+// ============================================================================
+
+// Default Shop Configuration
+const DEFAULT_SHOP_CONFIG = {
+  name: 'Daisy Day',
+  tagline: 'Handmade Flowers • Bloom Happiness ♡',
+  lineId: '@daisyday',
+  logo: (typeof IMAGES !== 'undefined' && IMAGES.logo) ? IMAGES.logo : '',
+  banner: (typeof IMAGES !== 'undefined' && IMAGES.banner) ? IMAGES.banner : ''
+};
+
+// Default Categories
+const DEFAULT_CATEGORIES = [
+  { id: 'single', name: 'ดอกเดี่ยว', icon: '🌷' },
+  { id: 'bouquet', name: 'รวมช่อ', icon: '💐' },
+  { id: 'sunflower', name: 'ทานตะวัน', icon: '🌻' }
+];
+
+// Default 6 Products
+const DEFAULT_PRODUCTS = [
+  {
+    id: 1,
+    name: 'Purple Lily',
+    nameTh: 'ดอกลิลลี่กำมะหยี่ สีม่วงพาสเทล',
+    category: 'single',
+    sku: 'SB-001',
+    price: 79,
+    image: (typeof IMAGES !== 'undefined' && IMAGES.purple_lily) ? IMAGES.purple_lily : '',
+    tag: 'ขายดี 💜',
+    description: 'ลิลลี่ลวดกำมะหยี่สีม่วงสุดละมุน ประดับเกสรสีขาวและโบว์ผ้าแก้วสีม่วงระยิบระยับ พร้อมแผ่นการ์ด Good Luck เหมาะสำหรับมอบเป็นของขวัญวันสำคัญ',
+    meaning: 'ความสง่างาม ความสำเร็จ และความจริงใจ',
+    badges: ['งานฝีมือ 100%', 'เก็บได้นานไม่เหี่ยว', 'พร้อมการ์ดของขวัญ']
+  },
+  {
+    id: 2,
+    name: 'Pink Lily',
+    nameTh: 'ดอกลิลลี่กำมะหยี่ สีชมพูมาเจนต้า',
+    category: 'single',
+    sku: 'SB-002',
+    price: 79,
+    image: (typeof IMAGES !== 'undefined' && IMAGES.pink_lily_1) ? IMAGES.pink_lily_1 : '',
+    tag: 'ยอดนิยม 🌸',
+    description: 'ดอกลิลลี่กำมะหยี่สีชมพูเฉดหวานสดใส ผูกโบว์ริบบิ้นน้ำตาลพรีเมียมสกรีน Just for you สไตล์เรียบหรู น่ารัก มีเสน่ห์ในทุกมุมมอง',
+    meaning: 'ความรักที่สดใส ความอบอุ่น และความปรารถนาดี',
+    badges: ['งานแฮนด์เมด', 'โบว์ผ้าซาติน', 'การ์ด Good Luck']
+  },
+  {
+    id: 3,
+    name: 'Pink Lily (Sparkle Pearl)',
+    nameTh: 'ดอกลิลลี่กำมะหยี่ สีชมพูขอบขาว แต่งคริสตัล',
+    category: 'single',
+    sku: 'SB-003',
+    price: 79,
+    image: (typeof IMAGES !== 'undefined' && IMAGES.pink_lily_2) ? IMAGES.pink_lily_2 : '',
+    tag: 'ดีเทลพิเศษ ✨',
+    description: 'ลิลลี่กำมะหยี่สีชมพูหวานแต่งขอบปุยขาว ตกแต่งด้วยคริสตัลดอกไม้ประกายแวววาว ผูกโบว์ Just for you เพิ่มความวิบวับสะดุดตา',
+    meaning: 'ความงดงามเปล่งประกาย และความอ่อนหวาน',
+    badges: ['คริสตัลวิบวับ', 'งานประณีต', 'แพ็กเกจน่ารัก']
+  },
+  {
+    id: 4,
+    name: 'Heart Crystal Lily',
+    nameTh: 'ดอกลิลลี่กำมะหยี่ คริสตัลหัวใจ',
+    category: 'single',
+    sku: 'SB-004',
+    price: 89,
+    image: (typeof IMAGES !== 'undefined' && IMAGES.heart_crystal_lily) ? IMAGES.heart_crystal_lily : '',
+    tag: 'รุ่นพรีเมียม 💖',
+    description: 'ดอกลิลลี่กำมะหยี่เกรดพรีเมียม ประดับคริสตัลรูปหัวใจสีชมพูและเพชรระยิบระยับ ผูกโบว์ผ้าแก้วสีชมพูหวานละมุน พร้อมการ์ด Good Luck',
+    meaning: 'แทนใจด้วยความรักที่บริสุทธิ์และมั่นคง',
+    badges: ['คริสตัลหัวใจ', 'โบว์ผ้าแก้วนำเข้า', 'ของขวัญวาเลนไทน์']
+  },
+  {
+    id: 5,
+    name: 'Pink Lily & Tulip Bouquet',
+    nameTh: 'ช่อลิลลี่ & ทิวลิปชมพูแสนหวาน',
+    category: 'bouquet',
+    sku: 'LB-001',
+    price: 189,
+    image: (typeof IMAGES !== 'undefined' && IMAGES.bouquet) ? IMAGES.bouquet : '',
+    tag: 'ช่อของขวัญสุดฮิต 💐',
+    description: 'ช่อดอกไม้จัดรวมดอกลิลลี่ชมพู ดอกทิวลิปกำมะหยี่ และดอกเดซี่มินิน่ารัก ห่อด้วยกระดาษเกาหลีสีขาวและผ้าตาข่าย ผูกโบว์ Just for you สุดประณีต',
+    meaning: 'การเริ่มต้นใหม่ ความสดใส และความประทับใจไม่รู้ลืม',
+    badges: ['ช่อจัดเต็ม', 'ของขวัญรับปริญญา', 'วันเกิด & ครบรอบ']
+  },
+  {
+    id: 6,
+    name: 'Sunflower Bouquet',
+    nameTh: 'ช่อดอกทานตะวันแสนสดใส',
+    category: 'sunflower',
+    sku: 'SF-001',
+    price: 189,
+    image: (typeof IMAGES !== 'undefined' && IMAGES.sunflower) ? IMAGES.sunflower : '',
+    tag: 'พลังบวก & ยอดฮิต 🌻',
+    description: 'ช่อดอกทานตะวันลวดกำมะหยี่สีเหลืองสดใส ผสานดอกเดซี่มินิและกิ่งใบเขียว ห่อกระดาษเกาหลีสีขาวและผ้าตาข่ายฟู ผูกโบว์ริบบิ้น Just for you สื่อถึงพลังบวกและความสดชื่น',
+    meaning: 'ความสุข ความสดชื่น ความหวัง และพลังบวกในทุกวัน',
+    badges: ['ช่อซิกเนเจอร์', 'สไตล์เกาหลี', 'มอบให้ได้ทุกโอกาส']
+  }
+];
+
+// Helper to safely load data from LocalStorage
+function loadStoredData(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw);
+    return parsed && (Array.isArray(fallback) ? Array.isArray(parsed) : typeof parsed === 'object') ? parsed : fallback;
+  } catch (e) {
+    console.warn(`LocalStorage read error for ${key}:`, e);
+    return fallback;
+  }
+}
+
+// Active State
+let shopConfig = loadStoredData('daisy_shop_config_v2', DEFAULT_SHOP_CONFIG);
+let categories = loadStoredData('daisy_categories_v2', DEFAULT_CATEGORIES);
+let products = loadStoredData('daisy_products_v2', DEFAULT_PRODUCTS);
+
+const state = {
+  activeCategory: 'all',
+  viewMode: 'flipbook',
+  currentPageIndex: 0,
+  flipbookPages: [],
+  soundEnabled: true,
+  selectedProductForModal: null,
+  currentEditorImageBase64: ''
+};
+
+// Web Audio Paper Sound Effect
+class SoundFX {
+  constructor() {
+    this.ctx = null;
+  }
+  init() {
+    if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      this.ctx = new AudioCtx();
+    }
+  }
+  playFlip() {
+    if (!state.soundEnabled) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      if (this.ctx.state === 'suspended') this.ctx.resume();
+
+      const bufferSize = this.ctx.sampleRate * 0.18;
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const output = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.35));
+      }
+
+      const whiteNoise = this.ctx.createBufferSource();
+      whiteNoise.buffer = buffer;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 1400;
+      filter.Q.value = 1.2;
+
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.18);
+
+      whiteNoise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      whiteNoise.start();
+    } catch (e) {
+      console.warn('Audio play error:', e);
+    }
+  }
+}
+
+const sfx = new SoundFX();
+
+// Category Helper
+function getCategoryName(catId) {
+  const c = categories.find(item => item.id === catId);
+  return c ? c.name : 'ทั่วไป';
+}
+
+// Filter Products
+function getFilteredProducts() {
+  if (state.activeCategory === 'all') return products;
+  return products.filter(p => p.category === state.activeCategory);
+}
+
+// Update Shop Info Across the App
+function updateShopDisplays() {
+  const shopTitle = document.getElementById('headerShopTitle');
+  const shopTagline = document.getElementById('headerShopTagline');
+  const brandLogo = document.getElementById('brandLogoImg');
+  const modalLogo = document.getElementById('modalLogoMini');
+  const currentLineIdText = document.getElementById('currentLineIdText');
+  const bottomLineText = document.getElementById('bottomLineText');
+
+  const logoSrc = shopConfig.logo || (typeof IMAGES !== 'undefined' ? IMAGES.logo : '');
+
+  if (shopTitle) shopTitle.textContent = shopConfig.name;
+  if (shopTagline) shopTagline.textContent = shopConfig.tagline;
+  if (brandLogo && logoSrc) brandLogo.src = logoSrc;
+  if (modalLogo && logoSrc) modalLogo.src = logoSrc;
+  if (currentLineIdText) currentLineIdText.textContent = shopConfig.lineId;
+  if (bottomLineText) bottomLineText.textContent = `LINE: ${shopConfig.lineId}`;
+}
+
+// Render Dynamic Category Navigation Bar
+function renderCategoryNav() {
+  const container = document.getElementById('categoryScrollContainer');
+  if (!container) return;
+
+  let html = `
+    <button class="category-pill ${state.activeCategory === 'all' ? 'active' : ''}" data-category="all">
+      <span class="pill-icon">✨</span>
+      <span>ทั้งหมด (All)</span>
+    </button>
+  `;
+
+  categories.forEach(cat => {
+    const isActive = state.activeCategory === cat.id ? 'active' : '';
+    html += `
+      <button class="category-pill ${isActive}" data-category="${cat.id}">
+        <span class="pill-icon">${cat.icon || '🌸'}</span>
+        <span>${cat.name}</span>
+      </button>
+    `;
+  });
+
+  container.innerHTML = html;
+
+  container.querySelectorAll('.category-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      setCategory(pill.dataset.category);
+    });
+  });
+}
+
+// Set Category Filter
+function setCategory(catKey) {
+  state.activeCategory = catKey;
+  renderCategoryNav();
+  buildFlipbookPages();
+  renderGridProducts();
+
+  const activePill = document.querySelector(`.category-pill[data-category="${catKey}"]`);
+  if (activePill) {
+    activePill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+}
+
+// Build Flipbook Pages
+function buildFlipbookPages() {
+  const filtered = getFilteredProducts();
+  const pages = [];
+
+  const logoSrc = shopConfig.logo || (typeof IMAGES !== 'undefined' ? IMAGES.logo : '');
+
+  // 1. Cover Page
+  pages.push({
+    type: 'cover',
+    title: shopConfig.name,
+    tagline: 'Bloom Happiness ♡',
+    subtitle: 'แคตตาล็อกดอกไม้ลวดกำมะหยี่แฮนด์เมด สั่งซื้อง่ายผ่าน LINE',
+    logoImg: logoSrc
+  });
+
+  // 2. Product Pages
+  filtered.forEach(prod => {
+    pages.push({
+      type: 'product',
+      data: prod
+    });
+  });
+
+  // 3. End Page
+  pages.push({
+    type: 'end',
+    title: 'Thank You! 🌸',
+    subtitle: 'เลือกช่อที่ถูกใจแล้ว กดสั่งซื้อส่งรายการให้แอดมินทาง LINE ได้เลยนะคะ',
+    lineId: shopConfig.lineId,
+    logoImg: logoSrc
+  });
+
+  state.flipbookPages = pages;
+  state.currentPageIndex = 0;
+
+  renderBookPagesHTML();
+  renderPageDots();
+  updateFlipbookView();
+}
+
+// Render HTML Pages inside Book Container
+function renderBookPagesHTML() {
+  const container = document.getElementById('bookPagesContainer');
+  if (!container) return;
+  container.innerHTML = '';
+
+  state.flipbookPages.forEach((page, index) => {
+    const pageEl = document.createElement('div');
+    pageEl.className = `book-page ${index === 0 ? 'active current' : ''}`;
+    pageEl.dataset.pageIndex = index;
+
+    if (page.type === 'cover') {
+      pageEl.innerHTML = `
+        <div class="cover-page">
+          <div class="cover-card-overlay">
+            <div class="cover-badge">🌸 HANDMADE FLOWERS</div>
+            <div class="cover-logo-hero">
+              <img src="${page.logoImg}" alt="Daisy Day Logo" class="cover-logo-img">
+            </div>
+            <h2 class="cover-title">${page.title}</h2>
+            <div class="cover-tagline">${page.tagline}</div>
+            <p class="cover-subtitle">${page.subtitle}</p>
+            <button class="cover-btn-start" onclick="nextPage()">
+              <span>เปิดชมแคตตาล็อก</span>
+              <span>➔</span>
+            </button>
+          </div>
+        </div>
+      `;
+    } else if (page.type === 'product') {
+      const p = page.data;
+      const catDisplayName = getCategoryName(p.category);
+      pageEl.innerHTML = `
+        <div class="page-header-row" style="padding: 10px 16px 4px; display: flex; justify-content: space-between; align-items: center;">
+          <span class="page-category-tag" style="background: #fdf2f6; color: #b73d6f; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">${catDisplayName}</span>
+          <span class="page-num" style="font-size: 11px; color: #8e7a9e;">${index + 1}/${state.flipbookPages.length}</span>
+        </div>
+        <div class="product-page-body">
+          <div class="product-img-frame" onclick="openLightbox('${p.image}')" title="แตะเพื่อดูรูปขยาย">
+            <img src="${p.image}" alt="${p.name}" loading="lazy">
+            <span class="product-tag-float">${p.tag || '🌸 แนะนำ'}</span>
+            <span class="product-sku-pill">รหัส: ${p.sku}</span>
+          </div>
+          <div class="product-info-wrap">
+            <div class="title-price-row">
+              <div>
+                <h3 class="product-title">${p.name}</h3>
+                ${p.nameTh ? `<div style="font-size: 11.5px; color: #7b628a; margin-top: 1px;">${p.nameTh}</div>` : ''}
+              </div>
+              <div class="product-price-badge">${p.price}฿</div>
+            </div>
+            ${p.description ? `<p class="product-desc">${p.description}</p>` : ''}
+            ${p.meaning ? `
+              <div style="font-size: 11px; color: #8e24aa; background: #faf5fc; padding: 4px 8px; border-radius: 8px; margin-top: 2px;">
+                💌 <strong>ความหมาย:</strong> ${p.meaning}
+              </div>
+            ` : ''}
+            <div class="order-btn-group">
+              <button class="btn-send-line" onclick="openOrderModal(${p.id})">
+                <svg class="btn-line-icon" viewBox="0 0 24 24">
+                  <path d="M24 10.3c0-5.18-5.38-9.4-12-9.4S0 5.12 0 10.3c0 4.64 4.27 8.52 10.05 9.24.39.08.93.26 1.06.6.12.31.08.8-.04 1.25l-.47 1.95c-.15.62-.7 2.45 2.15 1.34 2.84-1.11 7.68-4.52 10.48-7.75 1.84-2.12 2.77-4.27 2.77-6.63z"/>
+                </svg>
+                <span>สั่งซื้อสินค้านี้ผ่าน LINE</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (page.type === 'end') {
+      pageEl.innerHTML = `
+        <div class="cover-page">
+          <div class="cover-card-overlay">
+            <div class="cover-badge">🌸 DAISY DAY</div>
+            <div style="font-size: 38px; margin-bottom: 8px;">🌸</div>
+            <h2 class="cover-title">${page.title}</h2>
+            <p class="cover-subtitle" style="margin-bottom: 12px;">${page.subtitle}</p>
+            <div style="background: #fdf2f6; border: 1px solid #ffd8e4; padding: 8px 16px; border-radius: 12px; margin-bottom: 16px; font-size: 13px; color: #4a2868;">
+              💬 LINE ID: <strong>${page.lineId}</strong>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+              <button class="btn-send-line" onclick="openLineDirect()">
+                <svg class="btn-line-icon" viewBox="0 0 24 24"><path d="M24 10.3c0-5.18-5.38-9.4-12-9.4S0 5.12 0 10.3c0 4.64 4.27 8.52 10.05 9.24.39.08.93.26 1.06.6.12.31.08.8-.04 1.25l-.47 1.95c-.15.62-.7 2.45 2.15 1.34 2.84-1.11 7.68-4.52 10.48-7.75 1.84-2.12 2.77-4.27 2.77-6.63z"/></svg>
+                <span>💬 ทักแชท LINE ร้าน</span>
+              </button>
+              <button class="cover-btn-start" onclick="goToPage(0)" style="background: #f4ecf9; color: #7b4eb2; box-shadow: none; padding: 10px 20px; font-size: 13px;">
+                <span>↺ กลับไปหน้าแรก</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    container.appendChild(pageEl);
+  });
+}
+
+// Update 3D Book Page Transforms
+function updateFlipbookView() {
+  const pageEls = document.querySelectorAll('.book-page');
+  const total = state.flipbookPages.length;
+  const current = state.currentPageIndex;
+
+  pageEls.forEach((el, index) => {
+    el.classList.remove('active', 'current', 'flipped');
+
+    if (index < current) {
+      el.classList.add('flipped');
+      el.style.zIndex = index + 1;
+    } else if (index === current) {
+      el.classList.add('active', 'current');
+      el.style.zIndex = total + 5;
+    } else {
+      el.style.zIndex = total - index;
+    }
+  });
+
+  const progressText = document.getElementById('pageProgressText');
+  if (progressText) {
+    progressText.textContent = `${current + 1} / ${total}`;
+  }
+
+  const prevBtn = document.getElementById('prevPageBtn');
+  const nextBtn = document.getElementById('nextPageBtn');
+  if (prevBtn) prevBtn.disabled = current === 0;
+  if (nextBtn) nextBtn.disabled = current >= total - 1;
+
+  document.querySelectorAll('.page-dot').forEach((dot, idx) => {
+    dot.classList.toggle('active', idx === current);
+  });
+
+  const cornerCue = document.getElementById('cornerCurlCue');
+  if (cornerCue) {
+    cornerCue.style.display = current >= total - 1 ? 'none' : 'flex';
+  }
+}
+
+// Flip Controls
+function nextPage() {
+  if (state.currentPageIndex < state.flipbookPages.length - 1) {
+    sfx.playFlip();
+    state.currentPageIndex++;
+    updateFlipbookView();
+  }
+}
+
+function prevPage() {
+  if (state.currentPageIndex > 0) {
+    sfx.playFlip();
+    state.currentPageIndex--;
+    updateFlipbookView();
+  }
+}
+
+function goToPage(index) {
+  if (index >= 0 && index < state.flipbookPages.length) {
+    sfx.playFlip();
+    state.currentPageIndex = index;
+    updateFlipbookView();
+  }
+}
+
+// Render Page Dots Indicator
+function renderPageDots() {
+  const dotsContainer = document.getElementById('pageDotsRow');
+  if (!dotsContainer) return;
+  dotsContainer.innerHTML = '';
+  state.flipbookPages.forEach((_, idx) => {
+    const dot = document.createElement('div');
+    dot.className = `page-dot ${idx === state.currentPageIndex ? 'active' : ''}`;
+    dot.addEventListener('click', () => goToPage(idx));
+    dotsContainer.appendChild(dot);
+  });
+}
+
+// Render Grid Products Section
+function renderGridProducts() {
+  const container = document.getElementById('gridContainer');
+  if (!container) return;
+  const filtered = getFilteredProducts();
+  container.innerHTML = '';
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: #8e7a9e;">
+        <div style="font-size: 32px; margin-bottom: 8px;">🌸</div>
+        <p>ยังไม่มีรายการสินค้าในหมวดหมู่นี้</p>
+      </div>
+    `;
+    return;
+  }
+
+  filtered.forEach(prod => {
+    const card = document.createElement('div');
+    card.className = 'grid-product-card';
+    card.innerHTML = `
+      <div class="grid-img-wrap" onclick="openLightbox('${prod.image}')">
+        <img src="${prod.image}" alt="${prod.name}" class="grid-img" loading="lazy">
+        <span class="grid-tag">${prod.tag || '🌸'}</span>
+      </div>
+      <div class="grid-body">
+        <h4 class="grid-title">${prod.name}</h4>
+        ${prod.nameTh ? `<div style="font-size: 11px; color: #7b6a8e; margin-bottom: 4px;">${prod.nameTh}</div>` : ''}
+        <div class="grid-sku">${prod.sku} • ${getCategoryName(prod.category)}</div>
+        <div class="grid-price-row">
+          <div class="grid-price">${prod.price}฿</div>
+        </div>
+        <button class="grid-btn-order" onclick="openOrderModal(${prod.id})">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#ffffff">
+            <path d="M24 10.3c0-5.18-5.38-9.4-12-9.4S0 5.12 0 10.3c0 4.64 4.27 8.52 10.05 9.24.39.08.93.26 1.06.6.12.31.08.8-.04 1.25l-.47 1.95c-.15.62-.7 2.45 2.15 1.34 2.84-1.11 7.68-4.52 10.48-7.75 1.84-2.12 2.77-4.27 2.77-6.63z"/>
+          </svg>
+          <span>สั่งซื้อผ่าน LINE</span>
+        </button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// Order Modal Logic
+function openOrderModal(productId) {
+  const prod = products.find(p => p.id === productId);
+  if (!prod) return;
+
+  state.selectedProductForModal = prod;
+
+  const modalImg = document.getElementById('modalProductImg');
+  const modalTitle = document.getElementById('modalProductTitle');
+  const modalSku = document.getElementById('modalProductSku');
+  const modalPrice = document.getElementById('modalProductPrice');
+  const msgPreview = document.getElementById('previewMessageText');
+  const currentLineIdText = document.getElementById('currentLineIdText');
+  const modal = document.getElementById('orderModal');
+
+  if (modalImg) modalImg.src = prod.image;
+  if (modalTitle) modalTitle.textContent = prod.name;
+  if (modalSku) modalSku.textContent = `รหัส: ${prod.sku} (${getCategoryName(prod.category)})`;
+  if (modalPrice) modalPrice.textContent = `${prod.price}฿`;
+  if (currentLineIdText) currentLineIdText.textContent = shopConfig.lineId;
+
+  const orderMsg = generateLineMessage(prod);
+  if (msgPreview) msgPreview.textContent = orderMsg;
+
+  if (modal) modal.classList.add('active', 'open');
+}
+
+function closeOrderModal() {
+  const modal = document.getElementById('orderModal');
+  if (modal) modal.classList.remove('active', 'open');
+  state.selectedProductForModal = null;
+}
+
+function generateLineMessage(product) {
+  const catName = getCategoryName(product.category);
+  return `สวัสดีค่ะ สนใจสั่งซื้อดอกไม้จากร้าน ${shopConfig.name} ค่ะ 🌸
+------------------------
+🛍️ รายการ: ${product.name} ${product.nameTh ? `(${product.nameTh})` : ''}
+🏷️ รหัสสินค้า: ${product.sku}
+💰 ราคา: ${product.price} บาท
+📂 หมวดหมู่: ${catName}
+------------------------
+ต้องการสอบถามข้อมูลเพิ่มเติม / พร้อมสั่งซื้อค่ะ ✨`;
+}
+
+function sendOrderToLine() {
+  if (!state.selectedProductForModal) return;
+  const msg = generateLineMessage(state.selectedProductForModal);
+  const cleanId = shopConfig.lineId.replace(/^@/, '');
+  const encodedMsg = encodeURIComponent(msg);
+
+  navigator.clipboard.writeText(msg).catch(() => {});
+
+  const lineUrl = `https://line.me/R/oaMessage/%40${cleanId}/?${encodedMsg}`;
+  window.open(lineUrl, '_blank');
+  showToast('เปิด LINE แล้ว พร้อมข้อความสั่งซื้อ 🌸');
+}
+
+function copyOrderMessage() {
+  if (!state.selectedProductForModal) return;
+  const msg = generateLineMessage(state.selectedProductForModal);
+  navigator.clipboard.writeText(msg).then(() => {
+    showToast('คัดลอกข้อความแล้ว นำไปวางในแชท LINE ได้เลยค่ะ 📋');
+  }).catch(() => {
+    showToast('คัดลอกข้อความสำเร็จ 📋');
+  });
+}
+
+function openLineDirect() {
+  const cleanId = shopConfig.lineId.replace(/^@/, '');
+  window.open(`https://line.me/ti/p/~${cleanId}`, '_blank');
+}
+
+// Lightbox Modal
+function openLightbox(imgSrc) {
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  if (lightbox && lightboxImg) {
+    lightboxImg.src = imgSrc;
+    lightbox.classList.add('active', 'open');
+  }
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById('lightbox');
+  if (lightbox) lightbox.classList.remove('active', 'open');
+}
+
+// Toast Notification
+function showToast(text) {
+  const toast = document.getElementById('toastNotice');
+  const msg = document.getElementById('toastMessage');
+  if (!toast || !msg) return;
+
+  msg.textContent = text;
+  toast.classList.add('show');
+  clearTimeout(showToast.timeout);
+  showToast.timeout = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2600);
+}
+
+// Switch View Modes
+function setViewMode(mode) {
+  state.viewMode = mode;
+  const flipSection = document.getElementById('flipbookSection');
+  const gridSection = document.getElementById('gridSection');
+
+  document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.view === mode);
+  });
+
+  if (mode === 'flipbook') {
+    if (flipSection) flipSection.style.display = 'block';
+    if (gridSection) gridSection.style.display = 'none';
+    updateFlipbookView();
+  } else {
+    if (flipSection) flipSection.style.display = 'none';
+    if (gridSection) gridSection.style.display = 'block';
+    renderGridProducts();
+  }
+}
+
+// Setup Touch Swipe for Flipbook
+function setupTouchGestures() {
+  const book = document.getElementById('bookPagesContainer');
+  if (!book) return;
+
+  let startX = 0;
+  let startY = 0;
+
+  book.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+
+  book.addEventListener('touchend', (e) => {
+    const diffX = e.changedTouches[0].clientX - startX;
+    const diffY = e.changedTouches[0].clientY - startY;
+
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+      if (diffX < 0) {
+        nextPage();
+      } else {
+        prevPage();
+      }
+    }
+  }, { passive: true });
+}
+
+// ============================================================================
+// ADMIN STUDIO LOGIC (จัดการสินค้า, รูปภาพ, หมวดหมู่, ข้อมูลร้าน, อัปเดต GitHub)
+// ============================================================================
+
+// ============================================================================
+// ADMIN AUTHENTICATION (รหัสผ่านเข้าสู่ระบบแอดมิน)
+// ============================================================================
+const ADMIN_PASSWORD = 'Daisyday988';
+
+function isAdminAuthenticated() {
+  return sessionStorage.getItem('daisy_admin_authenticated') === 'true';
+}
+
+// Open & Close Admin Modal
+function openAdminModal() {
+  if (!isAdminAuthenticated()) {
+    openAdminAuthModal();
+    return;
+  }
+
+  const modal = document.getElementById('adminModal');
+  if (!modal) return;
+  modal.classList.add('active', 'open');
+
+  populateCategorySelect();
+  renderAdminProducts();
+  renderAdminCategories();
+  loadAdminShopForm();
+}
+
+function openAdminAuthModal() {
+  const authModal = document.getElementById('adminAuthModal');
+  const pwdInput = document.getElementById('adminPasswordInput');
+  const errText = document.getElementById('adminAuthError');
+
+  if (errText) errText.style.display = 'none';
+  if (pwdInput) {
+    pwdInput.value = '';
+    setTimeout(() => pwdInput.focus(), 150);
+  }
+  if (authModal) authModal.classList.add('active', 'open');
+}
+
+function closeAdminAuthModal() {
+  const authModal = document.getElementById('adminAuthModal');
+  if (authModal) authModal.classList.remove('active', 'open');
+  if (window.location.hash === '#admin' && !isAdminAuthenticated()) {
+    history.replaceState(null, null, window.location.pathname);
+  }
+}
+
+function submitAdminPassword() {
+  const pwdInput = document.getElementById('adminPasswordInput');
+  const errText = document.getElementById('adminAuthError');
+  const card = document.querySelector('.auth-modal-card');
+  const entered = pwdInput ? pwdInput.value.trim() : '';
+
+  if (entered === ADMIN_PASSWORD) {
+    sessionStorage.setItem('daisy_admin_authenticated', 'true');
+    if (errText) errText.style.display = 'none';
+    closeAdminAuthModal();
+    openAdminModal();
+    showToast('เข้าสู่ระบบแอดมินสำเร็จ 🌸');
+  } else {
+    if (errText) errText.style.display = 'block';
+    if (card) {
+      card.classList.remove('auth-shake');
+      void card.offsetWidth;
+      card.classList.add('auth-shake');
+    }
+    if (pwdInput) {
+      pwdInput.value = '';
+      pwdInput.focus();
+    }
+    showToast('รหัสผ่านไม่ถูกต้อง ❌');
+  }
+}
+
+function togglePasswordView() {
+  const input = document.getElementById('adminPasswordInput');
+  const icon = document.getElementById('togglePasswordVisibility');
+  if (!input) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (icon) icon.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    if (icon) icon.textContent = '👁️';
+  }
+}
+
+function adminLogout() {
+  sessionStorage.removeItem('daisy_admin_authenticated');
+  closeAdminModal();
+  showToast('ออกจากระบบแอดมินเรียบร้อยแล้ว 👋');
+}
+
+function closeAdminModal() {
+  const modal = document.getElementById('adminModal');
+  if (!modal) return;
+  modal.classList.remove('active', 'open');
+  if (window.location.hash === '#admin') {
+    history.replaceState(null, null, window.location.pathname);
+  }
+}
+
+// Admin Tab Switching
+function initAdminTabs() {
+  const tabBtns = document.querySelectorAll('.admin-tab-btn');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+
+      btn.classList.add('active');
+      const targetId = btn.dataset.tab;
+      const targetPanel = document.getElementById(targetId);
+      if (targetPanel) targetPanel.classList.add('active');
+
+      if (targetId === 'tab-products') renderAdminProducts();
+      if (targetId === 'tab-categories') renderAdminCategories();
+      if (targetId === 'tab-shop') loadAdminShopForm();
+    });
+  });
+}
+
+// Render Admin Products List
+function renderAdminProducts() {
+  const listContainer = document.getElementById('adminProductList');
+  const countEl = document.getElementById('adminProdCount');
+  if (countEl) countEl.textContent = products.length;
+  if (!listContainer) return;
+
+  listContainer.innerHTML = '';
+
+  products.forEach((prod, index) => {
+    const card = document.createElement('div');
+    card.className = 'admin-item-card';
+    card.innerHTML = `
+      <img src="${prod.image}" alt="${prod.name}" class="admin-item-thumb" onclick="openLightbox('${prod.image}')">
+      <div class="admin-item-info">
+        <div class="admin-item-title">${prod.name} ${prod.nameTh ? `(${prod.nameTh})` : ''}</div>
+        <div class="admin-item-meta">
+          <span>รหัส: <b>${prod.sku}</b></span> • 
+          <span>หมวด: <b>${getCategoryName(prod.category)}</b></span> • 
+          <span style="color: #9333ea; font-weight: 700;">${prod.price}฿</span>
+        </div>
+      </div>
+      <div class="admin-item-actions">
+        <button class="admin-action-btn edit" onclick="openEditProductModal(${prod.id})" title="แก้ไขสินค้านี้">✏️ แก้ไข</button>
+        <button class="admin-action-btn" onclick="moveProduct(${prod.id}, -1)" ${index === 0 ? 'disabled' : ''} title="เลื่อนขึ้น">⬆️</button>
+        <button class="admin-action-btn" onclick="moveProduct(${prod.id}, 1)" ${index === products.length - 1 ? 'disabled' : ''} title="เลื่อนลง">⬇️</button>
+        <button class="admin-action-btn delete" onclick="deleteProduct(${prod.id})" title="ลบสินค้านี้">🗑️</button>
+      </div>
+    `;
+    listContainer.appendChild(card);
+  });
+}
+
+// Populate Category Dropdown inside Product Editor
+function populateCategorySelect() {
+  const select = document.getElementById('editProductCategory');
+  if (!select) return;
+  select.innerHTML = '';
+  categories.forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat.id;
+    opt.textContent = `${cat.icon || '🌸'} ${cat.name}`;
+    select.appendChild(opt);
+  });
+}
+
+// Open Product Editor Modal (Add New)
+function openAddProductModal() {
+  populateCategorySelect();
+  state.currentEditorImageBase64 = '';
+
+  document.getElementById('productEditorTitle').textContent = '➕ เพิ่มสินค้าใหม่';
+  document.getElementById('editProductId').value = '';
+  document.getElementById('editProductName').value = '';
+  document.getElementById('editProductNameTh').value = '';
+  document.getElementById('editProductSku').value = `SB-${String(products.length + 1).padStart(3, '0')}`;
+  document.getElementById('editProductPrice').value = '79';
+  document.getElementById('editProductTag').value = 'สินค้าใหม่ ✨';
+  document.getElementById('editProductDesc').value = '';
+
+  const preview = document.getElementById('editProductImgPreview');
+  if (preview) {
+    preview.src = (typeof IMAGES !== 'undefined' && IMAGES.purple_lily) ? IMAGES.purple_lily : '';
+  }
+
+  const editorModal = document.getElementById('productEditorModal');
+  if (editorModal) editorModal.classList.add('active', 'open');
+}
+
+// Open Product Editor Modal (Edit Existing)
+function openEditProductModal(productId) {
+  const prod = products.find(p => p.id === productId);
+  if (!prod) return;
+
+  populateCategorySelect();
+  state.currentEditorImageBase64 = prod.image;
+
+  document.getElementById('productEditorTitle').textContent = `✏️ แก้ไขสินค้า: ${prod.name}`;
+  document.getElementById('editProductId').value = prod.id;
+  document.getElementById('editProductName').value = prod.name || '';
+  document.getElementById('editProductNameTh').value = prod.nameTh || '';
+  document.getElementById('editProductSku').value = prod.sku || '';
+  document.getElementById('editProductPrice').value = prod.price || '';
+  document.getElementById('editProductCategory').value = prod.category || (categories[0] ? categories[0].id : 'single');
+  document.getElementById('editProductTag').value = prod.tag || '';
+  document.getElementById('editProductDesc').value = prod.description || '';
+
+  const preview = document.getElementById('editProductImgPreview');
+  if (preview) preview.src = prod.image;
+
+  const editorModal = document.getElementById('productEditorModal');
+  if (editorModal) editorModal.classList.add('active', 'open');
+}
+
+function closeProductEditorModal() {
+  const editorModal = document.getElementById('productEditorModal');
+  if (editorModal) editorModal.classList.remove('active', 'open');
+}
+
+// Save Product (Add or Edit)
+function saveProductData() {
+  const idVal = document.getElementById('editProductId').value;
+  const name = document.getElementById('editProductName').value.trim();
+  const nameTh = document.getElementById('editProductNameTh').value.trim();
+  const sku = document.getElementById('editProductSku').value.trim();
+  const price = parseFloat(document.getElementById('editProductPrice').value) || 0;
+  const category = document.getElementById('editProductCategory').value;
+  const tag = document.getElementById('editProductTag').value.trim();
+  const desc = document.getElementById('editProductDesc').value.trim();
+
+  if (!name) {
+    alert('กรุณากรอกชื่อสินค้า');
+    return;
+  }
+
+  let imgUrl = state.currentEditorImageBase64;
+  if (!imgUrl) {
+    const preview = document.getElementById('editProductImgPreview');
+    imgUrl = preview ? preview.src : '';
+  }
+
+  if (idVal) {
+    // Edit existing product
+    const prodId = parseInt(idVal, 10);
+    const index = products.findIndex(p => p.id === prodId);
+    if (index !== -1) {
+      products[index] = {
+        ...products[index],
+        name,
+        nameTh,
+        sku,
+        price,
+        category,
+        tag,
+        description: desc,
+        image: imgUrl || products[index].image
+      };
+      showToast('แก้ไขข้อมูลสินค้าเรียบร้อยแล้ว 🌸');
+    }
+  } else {
+    // Add new product
+    const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+    const newProduct = {
+      id: newId,
+      name,
+      nameTh,
+      sku: sku || `SB-${String(newId).padStart(3, '0')}`,
+      price,
+      category,
+      tag: tag || 'แนะนำ 🌸',
+      description: desc,
+      meaning: 'มอบความสุขและความสดใส',
+      badges: ['แฮนด์เมด', 'พร้อมส่ง'],
+      image: imgUrl || (typeof IMAGES !== 'undefined' ? IMAGES.purple_lily : '')
+    };
+    products.push(newProduct);
+    showToast('เพิ่มสินค้าใหม่เรียบร้อยแล้ว ✨');
+  }
+
+  // Save to LocalStorage
+  localStorage.setItem('daisy_products_v2', JSON.stringify(products));
+
+  // Refresh views
+  closeProductEditorModal();
+  renderAdminProducts();
+  buildFlipbookPages();
+  renderGridProducts();
+}
+
+// Delete Product
+function deleteProduct(productId) {
+  const prod = products.find(p => p.id === productId);
+  if (!prod) return;
+  if (!confirm(`คุณต้องการลบสินค้า "${prod.name}" ใช่หรือไม่?`)) return;
+
+  products = products.filter(p => p.id !== productId);
+  localStorage.setItem('daisy_products_v2', JSON.stringify(products));
+
+  renderAdminProducts();
+  buildFlipbookPages();
+  renderGridProducts();
+  showToast('ลบสินค้าเรียบร้อยแล้ว 🗑️');
+}
+
+// Move Product Order Up / Down
+function moveProduct(productId, direction) {
+  const index = products.findIndex(p => p.id === productId);
+  if (index === -1) return;
+  const targetIndex = index + direction;
+  if (targetIndex < 0 || targetIndex >= products.length) return;
+
+  const temp = products[index];
+  products[index] = products[targetIndex];
+  products[targetIndex] = temp;
+
+  localStorage.setItem('daisy_products_v2', JSON.stringify(products));
+  renderAdminProducts();
+  buildFlipbookPages();
+  renderGridProducts();
+}
+
+// Setup Product Image Upload Listener
+function setupProductImageUpload() {
+  const fileInput = document.getElementById('editProductFileInput');
+  const preview = document.getElementById('editProductImgPreview');
+  if (!fileInput) return;
+
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (loadEvent) => {
+      const base64 = loadEvent.target.result;
+      state.currentEditorImageBase64 = base64;
+      if (preview) preview.src = base64;
+      showToast('อัปโหลดรูปภาพตัวอย่างแล้ว 📷');
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// Render Admin Categories List
+function renderAdminCategories() {
+  const container = document.getElementById('adminCategoryList');
+  if (!container) return;
+  container.innerHTML = '';
+
+  categories.forEach((cat) => {
+    const prodCount = products.filter(p => p.category === cat.id).length;
+    const item = document.createElement('div');
+    item.className = 'admin-category-item';
+    item.style.display = 'flex';
+    item.style.alignItems = 'center';
+    item.style.justifyContent = 'space-between';
+    item.style.padding = '10px 14px';
+    item.style.background = '#faf5fc';
+    item.style.borderRadius = '12px';
+    item.style.border = '1px solid #ebdcf5';
+
+    item.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 20px;">${cat.icon || '🌸'}</span>
+        <div>
+          <div style="font-weight: 700; color: #4a2868; font-size: 14px;">${cat.name}</div>
+          <div style="font-size: 11px; color: #8e7a9e;">รหัสหมวด: <code>${cat.id}</code> • มีสินค้า ${prodCount} รายการ</div>
+        </div>
+      </div>
+      <div>
+        <button class="admin-action-btn delete" onclick="deleteCategory('${cat.id}')" title="ลบหมวดหมู่">🗑️</button>
+      </div>
+    `;
+    container.appendChild(item);
+  });
+}
+
+// Add New Category
+function addNewCategory() {
+  const input = document.getElementById('newCategoryInput');
+  if (!input) return;
+  const name = input.value.trim();
+  if (!name) {
+    alert('กรุณากรอกชื่อหมวดหมู่');
+    return;
+  }
+
+  // Random cute icon
+  const icons = ['🌸', '🌷', '🌹', '🌻', '🌼', '🌺', '🍀', '🌿', '🎀'];
+  const icon = icons[Math.floor(Math.random() * icons.length)];
+  const id = 'cat_' + Date.now().toString(36);
+
+  categories.push({ id, name, icon });
+  localStorage.setItem('daisy_categories_v2', JSON.stringify(categories));
+
+  input.value = '';
+  renderAdminCategories();
+  renderCategoryNav();
+  populateCategorySelect();
+  showToast('เพิ่มหมวดหมู่ใหม่สำเร็จแล้ว 📂');
+}
+
+// Delete Category
+function deleteCategory(catId) {
+  const prodCount = products.filter(p => p.category === catId).length;
+  if (prodCount > 0) {
+    if (!confirm(`มีสินค้า ${prodCount} รายการอยู่ในหมวดหมู่นี้ คุณต้องการลบจริงหรือไม่?`)) return;
+  } else {
+    if (!confirm('คุณต้องการลบหมวดหมู่นี้ใช่หรือไม่?')) return;
+  }
+
+  categories = categories.filter(c => c.id !== catId);
+  localStorage.setItem('daisy_categories_v2', JSON.stringify(categories));
+
+  if (state.activeCategory === catId) state.activeCategory = 'all';
+
+  renderAdminCategories();
+  renderCategoryNav();
+  populateCategorySelect();
+  buildFlipbookPages();
+  renderGridProducts();
+  showToast('ลบหมวดหมู่เรียบร้อยแล้ว 🗑️');
+}
+
+// Load Shop Form Values
+function loadAdminShopForm() {
+  const nameInput = document.getElementById('adminShopNameInput');
+  const taglineInput = document.getElementById('adminShopTaglineInput');
+  const lineInput = document.getElementById('adminLineIdInput');
+  const logoPreview = document.getElementById('adminLogoPreview');
+  const bannerPreview = document.getElementById('adminBannerPreview');
+
+  if (nameInput) nameInput.value = shopConfig.name;
+  if (taglineInput) taglineInput.value = shopConfig.tagline;
+  if (lineInput) lineInput.value = shopConfig.lineId;
+  if (logoPreview) logoPreview.src = shopConfig.logo || (typeof IMAGES !== 'undefined' ? IMAGES.logo : '');
+  if (bannerPreview) bannerPreview.src = shopConfig.banner || (typeof IMAGES !== 'undefined' ? IMAGES.banner : '');
+}
+
+// Save Shop Settings
+function saveShopSettings() {
+  const nameInput = document.getElementById('adminShopNameInput');
+  const taglineInput = document.getElementById('adminShopTaglineInput');
+  const lineInput = document.getElementById('adminLineIdInput');
+  const logoPreview = document.getElementById('adminLogoPreview');
+  const bannerPreview = document.getElementById('adminBannerPreview');
+
+  if (nameInput) shopConfig.name = nameInput.value.trim() || 'Daisy Day';
+  if (taglineInput) shopConfig.tagline = taglineInput.value.trim() || 'Handmade Flowers • Bloom Happiness ♡';
+  if (lineInput) {
+    let rawLine = lineInput.value.trim();
+    if (rawLine && !rawLine.startsWith('@')) rawLine = '@' + rawLine;
+    shopConfig.lineId = rawLine || '@daisyday';
+  }
+  if (logoPreview && logoPreview.src) shopConfig.logo = logoPreview.src;
+  if (bannerPreview && bannerPreview.src) shopConfig.banner = bannerPreview.src;
+
+  localStorage.setItem('daisy_shop_config_v2', JSON.stringify(shopConfig));
+
+  updateShopDisplays();
+  buildFlipbookPages();
+  showToast('บันทึกข้อมูลร้านค้าเรียบร้อยแล้ว 💖');
+}
+
+// Setup Shop Image Upload Listeners
+function setupShopImageUploads() {
+  const logoInput = document.getElementById('adminLogoFileInput');
+  const logoPreview = document.getElementById('adminLogoPreview');
+  if (logoInput) {
+    logoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        if (logoPreview) logoPreview.src = ev.target.result;
+        showToast('อัปโหลดโลโก้ตัวอย่างแล้ว 🌸 อย่าลืมกดบันทึก');
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  const bannerInput = document.getElementById('adminBannerFileInput');
+  const bannerPreview = document.getElementById('adminBannerPreview');
+  if (bannerInput) {
+    bannerInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        if (bannerPreview) bannerPreview.src = ev.target.result;
+        showToast('อัปโหลดแบนเนอร์ตัวอย่างแล้ว ✨ อย่าลืมกดบันทึก');
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+}
+
+// Reset Everything to Defaults
+function resetToDefaults() {
+  if (!confirm('คุณต้องการล้างข้อมูลที่แก้ไขทั้งหมด และคืนค่ากลับสู่เริ่มต้นใช่หรือไม่?')) return;
+  localStorage.removeItem('daisy_products_v2');
+  localStorage.removeItem('daisy_categories_v2');
+  localStorage.removeItem('daisy_shop_config_v2');
+  location.reload();
+}
+
+// Export Updated app.js for GitHub
+function exportUpdatedAppJs() {
+  try {
+    const exportImages = (typeof IMAGES !== 'undefined') ? IMAGES : {};
+    const scriptHeader = `// Auto-generated Daisy Day Catalog Bundle with Admin Updates\n` +
+      `const IMAGES = ${JSON.stringify(exportImages, null, 2)};\n\n`;
+
+    const updatedLogic = logicScriptContent || '';
+    const fullBundle = scriptHeader + updatedLogic;
+
+    const blob = new Blob([fullBundle], { type: 'application/javascript;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.href = url;
+    downloadAnchor.download = 'app.js';
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    document.body.removeChild(downloadAnchor);
+    URL.revokeObjectURL(url);
+
+    showToast('ดาวน์โหลด app.js สำเร็จ! นำไปอัปโหลดขึ้น GitHub ได้ทันที 🚀');
+  } catch (err) {
+    console.error('Export error:', err);
+    alert('เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์: ' + err.message);
+  }
+}
+
+let logicScriptContent = '';
+
+// Check URL Hash for Admin Access
+function checkAdminHash() {
+  if (window.location.hash === '#admin') {
+    openAdminModal();
+  }
+}
+
+// ============================================================================
+// APP INITIALIZATION
+// ============================================================================
+function initApp() {
+  updateShopDisplays();
+  renderCategoryNav();
+  buildFlipbookPages();
+  renderGridProducts();
+  setupEventListeners();
+  setupTouchGestures();
+  setupProductImageUpload();
+  setupShopImageUploads();
+  initAdminTabs();
+  createFloatingPetals();
+
+  // Check URL hash for direct admin access
+  checkAdminHash();
+  window.addEventListener('hashchange', checkAdminHash);
+  setTimeout(checkAdminHash, 150);
+
+  // Capture current logic script text for GitHub export
+  try {
+    fetch('./app.js')
+      .then(res => res.text())
+      .then(text => {
+        const imgEndMatch = text.indexOf('// DAISY DAY - COMPREHENSIVE STOREFRONT');
+        if (imgEndMatch !== -1) {
+          logicScriptContent = text.substring(imgEndMatch);
+        } else {
+          logicScriptContent = text;
+        }
+      })
+      .catch(() => {});
+  } catch (e) {}
+}
+
+function setupEventListeners() {
+  // Navigation buttons
+  const prevBtn = document.getElementById('prevPageBtn');
+  const nextBtn = document.getElementById('nextPageBtn');
+  if (prevBtn) prevBtn.addEventListener('click', prevPage);
+  if (nextBtn) nextBtn.addEventListener('click', nextPage);
+
+  const cornerCue = document.getElementById('cornerCurlCue');
+  if (cornerCue) cornerCue.addEventListener('click', nextPage);
+
+  // View mode switcher buttons
+  document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setViewMode(btn.dataset.view);
+    });
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (state.viewMode === 'flipbook') {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        nextPage();
+      } else if (e.key === 'ArrowLeft') {
+        prevPage();
+      }
+    }
+    if (e.key === 'Escape') {
+      closeOrderModal();
+      closeLightbox();
+      closeAdminModal();
+      closeProductEditorModal();
+      closeAdminAuthModal();
+    }
+  });
+
+  // Order modal events
+  const modalCloseBtn = document.getElementById('modalCloseBtn');
+  const orderModal = document.getElementById('orderModal');
+  if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeOrderModal);
+  if (orderModal) {
+    orderModal.addEventListener('click', (e) => {
+      if (e.target === orderModal) closeOrderModal();
+    });
+  }
+
+  // Admin Auth Modal click outside to close
+  const adminAuthModal = document.getElementById('adminAuthModal');
+  if (adminAuthModal) {
+    adminAuthModal.addEventListener('click', (e) => {
+      if (e.target === adminAuthModal) closeAdminAuthModal();
+    });
+  }
+
+  const btnOpenLineDirect = document.getElementById('btnOpenLineDirect');
+  const btnCopyLineMsg = document.getElementById('btnCopyLineMsg');
+  if (btnOpenLineDirect) btnOpenLineDirect.addEventListener('click', sendOrderToLine);
+  if (btnCopyLineMsg) btnCopyLineMsg.addEventListener('click', copyOrderMessage);
+
+  // Discreet Admin Open Trigger
+  const openAdminTrigger = document.getElementById('openAdminTrigger');
+  const adminCloseBtn = document.getElementById('adminCloseBtn');
+  const adminModal = document.getElementById('adminModal');
+
+  if (openAdminTrigger) openAdminTrigger.addEventListener('click', openAdminModal);
+  if (adminCloseBtn) adminCloseBtn.addEventListener('click', closeAdminModal);
+  if (adminModal) {
+    adminModal.addEventListener('click', (e) => {
+      if (e.target === adminModal) closeAdminModal();
+    });
+  }
+
+  // Lightbox
+  const lightbox = document.getElementById('lightbox');
+  if (lightbox) lightbox.addEventListener('click', closeLightbox);
+
+  // Header toggles
+  const toggleSoundBtn = document.getElementById('toggleSoundBtn');
+  if (toggleSoundBtn) {
+    toggleSoundBtn.addEventListener('click', () => {
+      state.soundEnabled = !state.soundEnabled;
+      toggleSoundBtn.textContent = state.soundEnabled ? '🔊' : '🔇';
+      showToast(state.soundEnabled ? 'เปิดเสียงเอฟเฟกต์สมุด' : 'ปิดเสียงเอฟเฟกต์');
+    });
+  }
+
+  const toggleDesktopBtn = document.getElementById('toggleDesktopBtn');
+  if (toggleDesktopBtn) {
+    toggleDesktopBtn.addEventListener('click', () => {
+      const container = document.querySelector('.app-container');
+      if (container) {
+        container.classList.toggle('desktop-mode');
+        const isDesktop = container.classList.contains('desktop-mode');
+        toggleDesktopBtn.textContent = isDesktop ? '📱' : '💻';
+        showToast(isDesktop ? 'ขยายหน้าจอมุมมองกว้าง' : 'มุมมองหน้าจอมือถือ (Mobile View)');
+      }
+    });
+  }
+}
+
+// Floating Petals
+function createFloatingPetals() {
+  const container = document.getElementById('petalCanvas');
+  if (!container) return;
+  const count = 16;
+  container.innerHTML = '';
+
+  for (let i = 0; i < count; i++) {
+    const petal = document.createElement('div');
+    petal.className = 'petal';
+    petal.style.left = `${Math.random() * 100}%`;
+    petal.style.animationDelay = `${Math.random() * 12}s`;
+    petal.style.animationDuration = `${10 + Math.random() * 8}s`;
+    petal.style.opacity = `${0.3 + Math.random() * 0.5}`;
+    petal.style.width = `${10 + Math.random() * 10}px`;
+    petal.style.height = `${10 + Math.random() * 10}px`;
+    container.appendChild(petal);
+  }
+}
+
+// Start App when DOM ready
+document.addEventListener('DOMContentLoaded', initApp);

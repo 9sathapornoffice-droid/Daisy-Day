@@ -28,8 +28,8 @@
       <div class="brand-wrapper" onclick="goToPage(0)">
         <img id="brandLogoImg" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>" alt="Daisy Day Logo" class="brand-logo-img">
         <div class="brand-info">
-          <h1>Daisy Day</h1>
-          <p>Handmade Flowers • Bloom Happiness ♡</p>
+          <h1 id="headerShopTitle">Daisy Day</h1>
+          <p id="headerShopTagline">Handmade Flowers • Bloom Happiness ♡</p>
         </div>
       </div>
       <div class="header-actions">
@@ -40,23 +40,8 @@
 
     <!-- Category Filter Bar (ทั้งหมด, ดอกเดี่ยว, รวมช่อ, ทานตะวัน) -->
     <nav class="category-nav-bar">
-      <div class="category-scroll">
-        <button class="category-pill active" data-category="all">
-          <span>✨</span>
-          <span>ทั้งหมด</span>
-        </button>
-        <button class="category-pill" data-category="single">
-          <span>🌷</span>
-          <span>ดอกเดี่ยว</span>
-        </button>
-        <button class="category-pill" data-category="bouquet">
-          <span>💐</span>
-          <span>รวมช่อ</span>
-        </button>
-        <button class="category-pill" data-category="sunflower">
-          <span>🌻</span>
-          <span>ทานตะวัน</span>
-        </button>
+      <div class="category-scroll" id="categoryScrollContainer">
+        <!-- Dynamically rendered by app.js -->
       </div>
     </nav>
 
@@ -118,8 +103,10 @@
       <div class="bottom-shop-info">
         <div class="shop-line-pill" id="bottomLineIdPill" title="คลิกเพื่อแก้ไข LINE ID">
           <span>💬</span>
-          <span>LINE: @daisyday</span>
+          <span id="bottomLineText">LINE: @daisyday</span>
         </div>
+        <!-- Discreet Admin Link (ไม่เด่น) -->
+        <span class="admin-entry-link" id="openAdminTrigger" onclick="openAdminModal()" title="ระบบจัดการร้านค้า (แอดมิน)">⚙️ จัดการร้าน</span>
       </div>
       <button class="bottom-btn-direct-line" onclick="openLineDirect()">
         <span>💬 ทักแชท LINE ร้าน</span>
@@ -182,6 +169,275 @@
         <button class="btn-copy-line-msg" id="btnCopyLineMsg">
           <span>📋 คัดลอกข้อความเพื่อส่งเอง</span>
         </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =======================================================
+       ADMIN AUTH MODAL (ใส่รหัสผ่านก่อนเข้าจัดการร้าน)
+       ======================================================= -->
+  <div class="admin-overlay" id="adminAuthModal" style="z-index: 600;">
+    <div class="admin-modal-card auth-modal-card" style="max-width: 380px; text-align: center; padding: 28px 24px;">
+      <div style="font-size: 44px; margin-bottom: 8px;">🔐</div>
+      <h3 style="font-size: 18px; font-weight: 700; color: #4a2868; margin-bottom: 6px;">ระบบจัดการร้านค้า</h3>
+      <p style="font-size: 13px; color: #7b6a8e; margin-bottom: 18px;">กรุณากรอกรหัสผ่านเพื่อเข้าสู่ระบบแอดมิน</p>
+      
+      <div style="position: relative; margin-bottom: 12px;">
+        <input type="password" id="adminPasswordInput" class="admin-input" placeholder="พิมพ์รหัสผ่าน..." style="text-align: center; font-size: 16px; letter-spacing: 2px; padding: 12px 38px 12px 14px;" onkeydown="if(event.key==='Enter') submitAdminPassword()">
+        <span id="togglePasswordVisibility" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 16px;" onclick="togglePasswordView()">👁️</span>
+      </div>
+
+      <div id="adminAuthError" style="display: none; color: #e11d48; font-size: 12.5px; font-weight: 600; margin-bottom: 14px; background: #ffe4e6; padding: 7px 12px; border-radius: 10px; border: 1px solid #fecdd3;">
+        ❌ รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: center; margin-top: 6px;">
+        <button class="admin-btn-secondary" onclick="closeAdminAuthModal()" style="flex: 1;">ยกเลิก</button>
+        <button class="admin-btn-primary" onclick="submitAdminPassword()" style="flex: 1.4;">
+          <span>เข้าสู่ระบบ ➔</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =======================================================
+       ADMIN PANEL MODAL (ระบบจัดการร้านค้า แก้ไขและบันทึกได้ทุกอย่าง)
+       ======================================================= -->
+  <div class="admin-overlay" id="adminModal">
+    <div class="admin-modal-card">
+      
+      <!-- Admin Top Bar -->
+      <div class="admin-top-bar">
+        <div class="admin-top-title">
+          <h2>🌸 Daisy Day Admin Studio</h2>
+          <span>ระบบจัดการหลังบ้าน</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button class="admin-action-btn" onclick="adminLogout()" title="ออกจากระบบแอดมิน" style="font-size: 11.5px; padding: 5px 10px; border-radius: 10px; background: #fff0f5; color: #d81b60; border: 1px solid #ffd8e4; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+            <span>🔒</span>
+            <span>ออกจากระบบ</span>
+          </button>
+          <button class="admin-close-btn" id="adminCloseBtn" onclick="closeAdminModal()" title="ปิดหน้าต่างแอดมิน">✕</button>
+        </div>
+      </div>
+
+      <!-- Admin Navigation Tabs -->
+      <nav class="admin-nav-tabs">
+        <button class="admin-tab-btn active" data-tab="tab-products">🛍️ จัดการสินค้า (<span id="adminProdCount">6</span>)</button>
+        <button class="admin-tab-btn" data-tab="tab-categories">📂 หมวดหมู่</button>
+        <button class="admin-tab-btn" data-tab="tab-shop">⚙️ ข้อมูลร้าน & LINE</button>
+        <button class="admin-tab-btn" data-tab="tab-export">🚀 อัปเดต GitHub</button>
+      </nav>
+
+      <!-- Admin Tab Body Panels -->
+      <div class="admin-body">
+
+        <!-- 1. TAB: PRODUCTS MANAGEMENT -->
+        <div class="admin-panel active" id="tab-products">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <p style="font-size: 13px; color: #6b5577;">เพิ่ม แก้ไขราคา เปลี่ยนรูปภาพ หรือลบรายการสินค้าได้ทันที</p>
+            <button class="admin-btn-primary" onclick="openAddProductModal()">
+              <span>➕ เพิ่มสินค้าใหม่</span>
+            </button>
+          </div>
+
+          <div class="admin-items-grid" id="adminProductList">
+            <!-- Dynamically populated by app.js -->
+          </div>
+        </div>
+
+        <!-- 2. TAB: CATEGORIES MANAGEMENT -->
+        <div class="admin-panel" id="tab-categories">
+          <div style="margin-bottom: 14px;">
+            <h3 style="font-size: 15px; font-weight: 600; color: #4a2868; margin-bottom: 6px;">จัดการหมวดหมู่สินค้า</h3>
+            <p style="font-size: 12.5px; color: #7b6a8e;">เพิ่มหรือเปลี่ยนชื่อหมวดหมู่ที่แสดงบนแถบเลือกสินค้า</p>
+          </div>
+
+          <div style="background: #fff; padding: 16px; border-radius: 16px; border: 1px solid #ebdcf5; margin-bottom: 16px;">
+            <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+              <input type="text" id="newCategoryInput" class="admin-input" placeholder="พิมพ์ชื่อหมวดหมู่ใหม่ เช่น ดอกไม้รับปริญญา...">
+              <button class="admin-btn-primary" onclick="addNewCategory()" style="flex-shrink: 0;">➕ เพิ่มหมวดหมู่</button>
+            </div>
+            <div id="adminCategoryList" style="display: flex; flex-direction: column; gap: 8px;">
+              <!-- Populated by app.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. TAB: SHOP & LINE SETTINGS -->
+        <div class="admin-panel" id="tab-shop">
+          <div style="background: #fff; padding: 18px; border-radius: 18px; border: 1px solid #ebdcf5;">
+            
+            <div class="admin-form-group">
+              <label class="admin-form-label">ชื่อร้านค้า (Shop Name):</label>
+              <input type="text" id="adminShopNameInput" class="admin-input" placeholder="Daisy Day">
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">สโลแกนร้าน (Tagline / Subtitle):</label>
+              <input type="text" id="adminShopTaglineInput" class="admin-input" placeholder="Handmade Flowers • Bloom Happiness ♡">
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">LINE ID ของร้าน (เช่น @daisyday):</label>
+              <input type="text" id="adminLineIdInput" class="admin-input" placeholder="@daisyday">
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">โลโก้ร้านค้า (Shop Logo):</label>
+              <div class="admin-file-upload-wrap">
+                <img id="adminLogoPreview" src="" class="admin-file-preview" alt="Logo Preview">
+                <div>
+                  <label class="admin-file-btn">
+                    <span>📁 เลือกรูปโลโก้ใหม่</span>
+                    <input type="file" id="adminLogoFileInput" accept="image/*" style="display: none;">
+                  </label>
+                  <div style="font-size: 11px; color: #8e7a9e; margin-top: 4px;">แนะนำรูปสี่เหลี่ยมจัตุรัส</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">แบนเนอร์พื้นหลังหน้าปก (Cover Banner):</label>
+              <div class="admin-file-upload-wrap">
+                <img id="adminBannerPreview" src="" class="admin-file-preview" alt="Banner Preview">
+                <div>
+                  <label class="admin-file-btn">
+                    <span>📁 เลือกรูปแบนเนอร์ใหม่</span>
+                    <input type="file" id="adminBannerFileInput" accept="image/*" style="display: none;">
+                  </label>
+                  <div style="font-size: 11px; color: #8e7a9e; margin-top: 4px;">รูปลายตารางกิงแฮมหรือพื้นหลังที่ชอบ</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 18px;">
+              <button class="admin-btn-primary" onclick="saveShopSettings()">
+                <span>💾 บันทึกข้อมูลร้านค้า</span>
+              </button>
+              <button class="admin-btn-secondary" onclick="resetToDefaults()">
+                <span>↺ คืนค่าดั้งเดิม</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 4. TAB: EXPORT TO GITHUB -->
+        <div class="admin-panel" id="tab-export">
+          <div style="background: #fff; padding: 18px; border-radius: 18px; border: 1px solid #ebdcf5;">
+            <h3 style="font-size: 16px; font-weight: 700; color: #4a2868; margin-bottom: 6px;">🚀 บันทึกและนำข้อมูลไปอัปเดตบน GitHub</h3>
+            <p style="font-size: 13px; color: #6b5577; line-height: 1.5;">
+              เมื่อคุณแก้ไขสินค้า รูปภาพ หรือข้อมูลร้านค้าในหน้านี้ ระบบจะบันทึกไว้ในเครื่องของคุณทันที และหากต้องการให้ลูกค้าทุกคนที่เข้าเว็บผ่าน <b>9sathapornoffice-droid.github.io/Daisy-Day/</b> เห็นข้อมูลอัปเดตใหม่ สามารถดาวน์โหลดไฟล์ <b>app.js</b> ไปอัปโหลดบน GitHub ได้ในคลิกเดียวครับ!
+            </p>
+
+            <div style="margin: 16px 0;">
+              <button class="admin-btn-primary" onclick="exportUpdatedAppJs()" style="font-size: 15px; padding: 13px 24px;">
+                <span>📥 ดาวน์โหลดไฟล์ app.js ที่อัปเดตแล้ว</span>
+              </button>
+            </div>
+
+            <div class="github-export-box">
+              <div style="font-weight: 700; color: #166534; font-size: 13.5px; margin-bottom: 8px;">วิธีนำไฟล์ไปใส่ GitHub:</div>
+              <div class="github-step-item">
+                <span class="github-step-num">1</span>
+                <span>กดปุ่ม <b>"ดาวน์โหลดไฟล์ app.js ที่อัปเดตแล้ว"</b> ด้านบน</span>
+              </div>
+              <div class="github-step-item">
+                <span class="github-step-num">2</span>
+                <span>เปิดลิงก์ <a href="https://github.com/9sathapornoffice-droid/Daisy-Day/upload/main" target="_blank" style="color: #058f3d; font-weight: 600; text-decoration: underline;">GitHub Daisy-Day Upload</a></span>
+              </div>
+              <div class="github-step-item">
+                <span class="github-step-num">3</span>
+                <span>ลากไฟล์ <b>app.js</b> ที่เพิ่งดาวน์โหลดไปวางทับไฟล์เดิม แล้วกด <b>Commit changes</b> เสร็จเรียบร้อย!</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PRODUCT EDITOR SUB-MODAL (เพิ่ม/แก้ไขสินค้า) -->
+  <div class="admin-overlay" id="productEditorModal" style="z-index: 550;">
+    <div class="admin-modal-card" style="max-width: 500px;">
+      
+      <div class="admin-top-bar">
+        <div class="admin-top-title">
+          <h3 id="productEditorTitle" style="font-size: 16px; font-weight: 700; color: #4a2868;">➕ เพิ่มสินค้าใหม่</h3>
+        </div>
+        <button class="admin-close-btn" onclick="closeProductEditorModal()">✕</button>
+      </div>
+
+      <div class="admin-body" style="padding: 16px 20px;">
+        <input type="hidden" id="editProductId">
+
+        <!-- Image Upload Preview -->
+        <div class="admin-form-group">
+          <label class="admin-form-label">รูปภาพสินค้า (อัปโหลดรูปจากเครื่องได้ทันที):</label>
+          <div class="admin-file-upload-wrap">
+            <img id="editProductImgPreview" src="" class="admin-file-preview" style="width: 72px; height: 72px;" alt="Product Preview">
+            <div>
+              <label class="admin-file-btn">
+                <span>📷 เลือกรูปถ่ายสินค้า</span>
+                <input type="file" id="editProductFileInput" accept="image/*" style="display: none;">
+              </label>
+              <div style="font-size: 11px; color: #8e7a9e; margin-top: 4px;">รองรับทั้งไฟล์ JPG, PNG และรูปถ่ายจากมือถือ</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="admin-form-group">
+            <label class="admin-form-label">ชื่อสินค้า (อังกฤษ):</label>
+            <input type="text" id="editProductName" class="admin-input" placeholder="Purple Lily">
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-form-label">ชื่อภาษาไทย:</label>
+            <input type="text" id="editProductNameTh" class="admin-input" placeholder="ดอกลิลลี่กำมะหยี่สีม่วง">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="admin-form-group">
+            <label class="admin-form-label">รหัสสินค้า (SKU):</label>
+            <input type="text" id="editProductSku" class="admin-input" placeholder="SB-001">
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-form-label">ราคา (บาท):</label>
+            <input type="number" id="editProductPrice" class="admin-input" placeholder="79">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="admin-form-group">
+            <label class="admin-form-label">หมวดหมู่:</label>
+            <select id="editProductCategory" class="admin-input">
+              <!-- Populated by app.js -->
+            </select>
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-form-label">ป้ายแท็กกำกับ:</label>
+            <input type="text" id="editProductTag" class="admin-input" placeholder="ขายดี 💜">
+          </div>
+        </div>
+
+        <div class="admin-form-group">
+          <label class="admin-form-label">คำอธิบายสินค้า:</label>
+          <textarea id="editProductDesc" class="admin-input admin-textarea" placeholder="ระบุรายละเอียด วัสดุ ดอกไม้..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px;">
+          <button class="admin-btn-secondary" onclick="closeProductEditorModal()">ยกเลิก</button>
+          <button class="admin-btn-primary" onclick="saveProductData()">
+            <span>💾 บันทึกสินค้า</span>
+          </button>
+        </div>
+
       </div>
 
     </div>
