@@ -7,7 +7,7 @@
 const DEFAULT_SHOP_CONFIG = {
   name: 'Daisy Day',
   tagline: 'Handmade Flowers • Bloom Happiness ♡',
-  lineId: '@daisyday',
+  lineId: '@ptj5061o',
   logo: (typeof IMAGES !== 'undefined' && IMAGES.logo) ? IMAGES.logo : '',
   banner: (typeof IMAGES !== 'undefined' && IMAGES.banner) ? IMAGES.banner : ''
 };
@@ -116,6 +116,45 @@ function loadStoredData(key, fallback) {
 
 // Active State
 let shopConfig = loadStoredData('daisy_shop_config_v2', DEFAULT_SHOP_CONFIG);
+
+// Auto-migrate lineId to @ptj5061o if missing or set to old @daisyday
+if (!shopConfig.lineId || shopConfig.lineId === '@daisyday') {
+  shopConfig.lineId = '@ptj5061o';
+  try {
+    localStorage.setItem('daisy_shop_config_v2', JSON.stringify(shopConfig));
+  } catch (e) {}
+}
+
+// GitHub Pages public image repository (used for rich image cards in LINE chat)
+const GITHUB_ASSETS_BASE = 'https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/';
+
+const PRODUCT_IMAGE_MAP = {
+  1: 'purple-lily.jpg',
+  2: 'pink-lily-1.jpg',
+  3: 'pink-lily-2.jpg',
+  4: 'heart-crystal-lily.jpg',
+  5: 'pink-lily-tulip-bouquet.jpg',
+  6: 'sunflower-bouquet.jpg'
+};
+
+function getProductPublicImageUrl(product) {
+  if (!product) return '';
+  if (product.id && PRODUCT_IMAGE_MAP[product.id]) {
+    return GITHUB_ASSETS_BASE + PRODUCT_IMAGE_MAP[product.id];
+  }
+  if (product.image && (product.image.startsWith('http://') || product.image.startsWith('https://'))) {
+    return product.image;
+  }
+  return '';
+}
+
+// Ensure logo and banner are populated from IMAGES if missing or empty
+if (!shopConfig.banner || shopConfig.banner.trim() === '') {
+  shopConfig.banner = (typeof IMAGES !== 'undefined' && IMAGES.banner) ? IMAGES.banner : '';
+}
+if (!shopConfig.logo || shopConfig.logo.trim() === '') {
+  shopConfig.logo = (typeof IMAGES !== 'undefined' && IMAGES.logo) ? IMAGES.logo : '';
+}
 let categories = loadStoredData('daisy_categories_v2', DEFAULT_CATEGORIES);
 let products = loadStoredData('daisy_products_v2', DEFAULT_PRODUCTS);
 
@@ -199,6 +238,7 @@ function updateShopDisplays() {
   const modalLogo = document.getElementById('modalLogoMini');
   const currentLineIdText = document.getElementById('currentLineIdText');
   const bottomLineText = document.getElementById('bottomLineText');
+  const previewLabel = document.getElementById('previewMessageLabel');
 
   const logoSrc = shopConfig.logo || (typeof IMAGES !== 'undefined' ? IMAGES.logo : '');
 
@@ -208,6 +248,7 @@ function updateShopDisplays() {
   if (modalLogo && logoSrc) modalLogo.src = logoSrc;
   if (currentLineIdText) currentLineIdText.textContent = shopConfig.lineId;
   if (bottomLineText) bottomLineText.textContent = `LINE: ${shopConfig.lineId}`;
+  if (previewLabel) previewLabel.textContent = `ข้อความที่จะส่งไปยัง LINE ร้าน (${shopConfig.lineId}):`;
 }
 
 // Render Dynamic Category Navigation Bar
@@ -260,6 +301,7 @@ function buildFlipbookPages() {
   const pages = [];
 
   const logoSrc = shopConfig.logo || (typeof IMAGES !== 'undefined' ? IMAGES.logo : '');
+  const bannerSrc = shopConfig.banner || (typeof IMAGES !== 'undefined' ? IMAGES.banner : '');
 
   // 1. Cover Page
   pages.push({
@@ -267,7 +309,8 @@ function buildFlipbookPages() {
     title: shopConfig.name,
     tagline: 'Bloom Happiness ♡',
     subtitle: 'แคตตาล็อกดอกไม้ลวดกำมะหยี่แฮนด์เมด สั่งซื้อง่ายผ่าน LINE',
-    logoImg: logoSrc
+    logoImg: logoSrc,
+    bannerImg: bannerSrc
   });
 
   // 2. Product Pages
@@ -284,7 +327,8 @@ function buildFlipbookPages() {
     title: 'Thank You! 🌸',
     subtitle: 'เลือกช่อที่ถูกใจแล้ว กดสั่งซื้อส่งรายการให้แอดมินทาง LINE ได้เลยนะคะ',
     lineId: shopConfig.lineId,
-    logoImg: logoSrc
+    logoImg: logoSrc,
+    bannerImg: bannerSrc
   });
 
   state.flipbookPages = pages;
@@ -307,8 +351,9 @@ function renderBookPagesHTML() {
     pageEl.dataset.pageIndex = index;
 
     if (page.type === 'cover') {
+      const bgStyle = page.bannerImg ? `background-image: url('${page.bannerImg}'); background-size: cover; background-position: center; background-repeat: no-repeat;` : '';
       pageEl.innerHTML = `
-        <div class="cover-page">
+        <div class="cover-page" style="${bgStyle}">
           <div class="cover-card-overlay">
             <div class="cover-badge">🌸 HANDMADE FLOWERS</div>
             <div class="cover-logo-hero">
@@ -364,20 +409,18 @@ function renderBookPagesHTML() {
         </div>
       `;
     } else if (page.type === 'end') {
+      const bgStyle = page.bannerImg ? `background-image: url('${page.bannerImg}'); background-size: cover; background-position: center; background-repeat: no-repeat;` : '';
       pageEl.innerHTML = `
-        <div class="cover-page">
+        <div class="cover-page" style="${bgStyle}">
           <div class="cover-card-overlay">
             <div class="cover-badge">🌸 DAISY DAY</div>
             <div style="font-size: 38px; margin-bottom: 8px;">🌸</div>
             <h2 class="cover-title">${page.title}</h2>
-            <p class="cover-subtitle" style="margin-bottom: 12px;">${page.subtitle}</p>
-            <div style="background: #fdf2f6; border: 1px solid #ffd8e4; padding: 8px 16px; border-radius: 12px; margin-bottom: 16px; font-size: 13px; color: #4a2868;">
-              💬 LINE ID: <strong>${page.lineId}</strong>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+            <p class="cover-subtitle" style="margin-bottom: 20px;">${page.subtitle}</p>
+            <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
               <button class="btn-send-line" onclick="openLineDirect()">
                 <svg class="btn-line-icon" viewBox="0 0 24 24"><path d="M24 10.3c0-5.18-5.38-9.4-12-9.4S0 5.12 0 10.3c0 4.64 4.27 8.52 10.05 9.24.39.08.93.26 1.06.6.12.31.08.8-.04 1.25l-.47 1.95c-.15.62-.7 2.45 2.15 1.34 2.84-1.11 7.68-4.52 10.48-7.75 1.84-2.12 2.77-4.27 2.77-6.63z"/></svg>
-                <span>💬 ทักแชท LINE ร้าน</span>
+                <span>ทักแชท LINE ร้าน</span>
               </button>
               <button class="cover-btn-start" onclick="goToPage(0)" style="background: #f4ecf9; color: #7b4eb2; box-shadow: none; padding: 10px 20px; font-size: 13px;">
                 <span>↺ กลับไปหน้าแรก</span>
@@ -526,6 +569,7 @@ function openOrderModal(productId) {
   const modalSku = document.getElementById('modalProductSku');
   const modalPrice = document.getElementById('modalProductPrice');
   const msgPreview = document.getElementById('previewMessageText');
+  const previewLabel = document.getElementById('previewMessageLabel');
   const currentLineIdText = document.getElementById('currentLineIdText');
   const modal = document.getElementById('orderModal');
 
@@ -534,6 +578,7 @@ function openOrderModal(productId) {
   if (modalSku) modalSku.textContent = `รหัส: ${prod.sku} (${getCategoryName(prod.category)})`;
   if (modalPrice) modalPrice.textContent = `${prod.price}฿`;
   if (currentLineIdText) currentLineIdText.textContent = shopConfig.lineId;
+  if (previewLabel) previewLabel.textContent = `ข้อความที่จะส่งไปยัง LINE ร้าน (${shopConfig.lineId}):`;
 
   const orderMsg = generateLineMessage(prod);
   if (msgPreview) msgPreview.textContent = orderMsg;
@@ -549,42 +594,59 @@ function closeOrderModal() {
 
 function generateLineMessage(product) {
   const catName = getCategoryName(product.category);
-  return `สวัสดีค่ะ สนใจสั่งซื้อดอกไม้จากร้าน ${shopConfig.name} ค่ะ 🌸
+  const imgUrl = getProductPublicImageUrl(product);
+  const imgLine = imgUrl ? `\n🖼️ รูปสินค้า: ${imgUrl}` : '';
+
+  return `สวัสดีค่ะ สนใจสั่งซื้อสินค้าตัวนี้ค่ะ 🌸
 ------------------------
 🛍️ รายการ: ${product.name} ${product.nameTh ? `(${product.nameTh})` : ''}
 🏷️ รหัสสินค้า: ${product.sku}
 💰 ราคา: ${product.price} บาท
-📂 หมวดหมู่: ${catName}
+📂 หมวดหมู่: ${catName}${imgLine}
 ------------------------
 ต้องการสอบถามข้อมูลเพิ่มเติม / พร้อมสั่งซื้อค่ะ ✨`;
 }
 
 function sendOrderToLine() {
   if (!state.selectedProductForModal) return;
-  const msg = generateLineMessage(state.selectedProductForModal);
-  const cleanId = shopConfig.lineId.replace(/^@/, '');
+  const prod = state.selectedProductForModal;
+  const msg = generateLineMessage(prod);
+  
+  let lineId = shopConfig.lineId || '@ptj5061o';
+  if (!lineId.startsWith('@')) lineId = '@' + lineId;
+  const cleanId = lineId.replace(/^@/, '');
   const encodedMsg = encodeURIComponent(msg);
 
-  navigator.clipboard.writeText(msg).catch(() => {});
+  // Auto-copy text message to clipboard as backup
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(msg).catch(() => {});
+    }
+  } catch (e) {}
 
+  // Open LINE Official Account 1-on-1 chat with prefilled message
   const lineUrl = `https://line.me/R/oaMessage/%40${cleanId}/?${encodedMsg}`;
   window.open(lineUrl, '_blank');
-  showToast('เปิด LINE แล้ว พร้อมข้อความสั่งซื้อ 🌸');
+  showToast(`เปิดแชท LINE ${lineId} เรียบร้อยค่ะ 🌸`);
 }
 
 function copyOrderMessage() {
   if (!state.selectedProductForModal) return;
   const msg = generateLineMessage(state.selectedProductForModal);
-  navigator.clipboard.writeText(msg).then(() => {
-    showToast('คัดลอกข้อความแล้ว นำไปวางในแชท LINE ได้เลยค่ะ 📋');
-  }).catch(() => {
-    showToast('คัดลอกข้อความสำเร็จ 📋');
-  });
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(msg).then(() => {
+      showToast('คัดลอกข้อความและลิงก์รูปภาพแล้ว นำไปวางใน LINE ได้เลยค่ะ 📋');
+    }).catch(() => {
+      showToast('คัดลอกข้อความสำเร็จ 📋');
+    });
+  }
 }
 
 function openLineDirect() {
-  const cleanId = shopConfig.lineId.replace(/^@/, '');
-  window.open(`https://line.me/ti/p/~${cleanId}`, '_blank');
+  let lineId = shopConfig.lineId || '@ptj5061o';
+  if (!lineId.startsWith('@')) lineId = '@' + lineId;
+  const cleanId = lineId.replace(/^@/, '');
+  window.open(`https://line.me/ti/p/%40${cleanId}`, '_blank');
 }
 
 // Lightbox Modal
@@ -1121,7 +1183,7 @@ function saveShopSettings() {
   if (lineInput) {
     let rawLine = lineInput.value.trim();
     if (rawLine && !rawLine.startsWith('@')) rawLine = '@' + rawLine;
-    shopConfig.lineId = rawLine || '@daisyday';
+    shopConfig.lineId = rawLine || '@ptj5061o';
   }
   if (logoPreview && logoPreview.src) shopConfig.logo = logoPreview.src;
   if (bannerPreview && bannerPreview.src) shopConfig.banner = bannerPreview.src;

@@ -438,7 +438,10 @@ body {
   align-items: center;
   text-align: center;
   padding: 24px 20px;
-  background: linear-gradient(135deg, #fdf4f8 0%, #ffebee 50%, #fff8e1 100%) center center / cover no-repeat;
+  background-color: #fdf4f8;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   overflow: hidden;
 }
 
