@@ -1,104 +1,140 @@
-
+﻿
 // ============================================================================
 // DAISY DAY - COMPREHENSIVE STOREFRONT & ADMIN STUDIO LOGIC
 // ============================================================================
 
 // Default Shop Configuration
 const DEFAULT_SHOP_CONFIG = {
-  name: 'Daisy Day',
-  tagline: 'Handmade Flowers • Bloom Happiness ♡',
-  lineId: '@ptj5061o',
-  logo: (typeof IMAGES !== 'undefined' && IMAGES.logo) ? IMAGES.logo : '',
-  banner: (typeof IMAGES !== 'undefined' && IMAGES.banner) ? IMAGES.banner : ''
+    "lineId":  "@ptj5061o",
+    "banner":  "assets/images/daisy-day-banner.jpg",
+    "name":  "Daisy Day",
+    "logo":  "assets/images/daisy-day-logo.jpg",
+    "tagline":  "Handmade Flowers • Bloom Happiness ♡"
 };
 
 // Default Categories
 const DEFAULT_CATEGORIES = [
-  { id: 'single', name: 'ดอกเดี่ยว', icon: '🌷' },
-  { id: 'bouquet', name: 'รวมช่อ', icon: '💐' },
-  { id: 'sunflower', name: 'ทานตะวัน', icon: '🌻' }
+    {
+        "icon":  "🌷",
+        "name":  "ดอกเดี่ยว",
+        "id":  "single"
+    },
+    {
+        "icon":  "💐",
+        "name":  "รวมช่อ",
+        "id":  "bouquet"
+    },
+    {
+        "icon":  "🌻",
+        "name":  "ทานตะวัน",
+        "id":  "sunflower"
+    }
 ];
 
 // Default 6 Products
 const DEFAULT_PRODUCTS = [
-  {
-    id: 1,
-    name: 'Purple Lily',
-    nameTh: 'ดอกลิลลี่กำมะหยี่ สีม่วงพาสเทล',
-    category: 'single',
-    sku: 'SB-001',
-    price: 79,
-    image: (typeof IMAGES !== 'undefined' && IMAGES.purple_lily) ? IMAGES.purple_lily : '',
-    tag: 'ขายดี 💜',
-    description: 'ลิลลี่ลวดกำมะหยี่สีม่วงสุดละมุน ประดับเกสรสีขาวและโบว์ผ้าแก้วสีม่วงระยิบระยับ พร้อมแผ่นการ์ด Good Luck เหมาะสำหรับมอบเป็นของขวัญวันสำคัญ',
-    meaning: 'ความสง่างาม ความสำเร็จ และความจริงใจ',
-    badges: ['งานฝีมือ 100%', 'เก็บได้นานไม่เหี่ยว', 'พร้อมการ์ดของขวัญ']
-  },
-  {
-    id: 2,
-    name: 'Pink Lily',
-    nameTh: 'ดอกลิลลี่กำมะหยี่ สีชมพูมาเจนต้า',
-    category: 'single',
-    sku: 'SB-002',
-    price: 79,
-    image: (typeof IMAGES !== 'undefined' && IMAGES.pink_lily_1) ? IMAGES.pink_lily_1 : '',
-    tag: 'ยอดนิยม 🌸',
-    description: 'ดอกลิลลี่กำมะหยี่สีชมพูเฉดหวานสดใส ผูกโบว์ริบบิ้นน้ำตาลพรีเมียมสกรีน Just for you สไตล์เรียบหรู น่ารัก มีเสน่ห์ในทุกมุมมอง',
-    meaning: 'ความรักที่สดใส ความอบอุ่น และความปรารถนาดี',
-    badges: ['งานแฮนด์เมด', 'โบว์ผ้าซาติน', 'การ์ด Good Luck']
-  },
-  {
-    id: 3,
-    name: 'Pink Lily (Sparkle Pearl)',
-    nameTh: 'ดอกลิลลี่กำมะหยี่ สีชมพูขอบขาว แต่งคริสตัล',
-    category: 'single',
-    sku: 'SB-003',
-    price: 79,
-    image: (typeof IMAGES !== 'undefined' && IMAGES.pink_lily_2) ? IMAGES.pink_lily_2 : '',
-    tag: 'ดีเทลพิเศษ ✨',
-    description: 'ลิลลี่กำมะหยี่สีชมพูหวานแต่งขอบปุยขาว ตกแต่งด้วยคริสตัลดอกไม้ประกายแวววาว ผูกโบว์ Just for you เพิ่มความวิบวับสะดุดตา',
-    meaning: 'ความงดงามเปล่งประกาย และความอ่อนหวาน',
-    badges: ['คริสตัลวิบวับ', 'งานประณีต', 'แพ็กเกจน่ารัก']
-  },
-  {
-    id: 4,
-    name: 'Heart Crystal Lily',
-    nameTh: 'ดอกลิลลี่กำมะหยี่ คริสตัลหัวใจ',
-    category: 'single',
-    sku: 'SB-004',
-    price: 89,
-    image: (typeof IMAGES !== 'undefined' && IMAGES.heart_crystal_lily) ? IMAGES.heart_crystal_lily : '',
-    tag: 'รุ่นพรีเมียม 💖',
-    description: 'ดอกลิลลี่กำมะหยี่เกรดพรีเมียม ประดับคริสตัลรูปหัวใจสีชมพูและเพชรระยิบระยับ ผูกโบว์ผ้าแก้วสีชมพูหวานละมุน พร้อมการ์ด Good Luck',
-    meaning: 'แทนใจด้วยความรักที่บริสุทธิ์และมั่นคง',
-    badges: ['คริสตัลหัวใจ', 'โบว์ผ้าแก้วนำเข้า', 'ของขวัญวาเลนไทน์']
-  },
-  {
-    id: 5,
-    name: 'Pink Lily & Tulip Bouquet',
-    nameTh: 'ช่อลิลลี่ & ทิวลิปชมพูแสนหวาน',
-    category: 'bouquet',
-    sku: 'LB-001',
-    price: 189,
-    image: (typeof IMAGES !== 'undefined' && IMAGES.bouquet) ? IMAGES.bouquet : '',
-    tag: 'ช่อของขวัญสุดฮิต 💐',
-    description: 'ช่อดอกไม้จัดรวมดอกลิลลี่ชมพู ดอกทิวลิปกำมะหยี่ และดอกเดซี่มินิน่ารัก ห่อด้วยกระดาษเกาหลีสีขาวและผ้าตาข่าย ผูกโบว์ Just for you สุดประณีต',
-    meaning: 'การเริ่มต้นใหม่ ความสดใส และความประทับใจไม่รู้ลืม',
-    badges: ['ช่อจัดเต็ม', 'ของขวัญรับปริญญา', 'วันเกิด & ครบรอบ']
-  },
-  {
-    id: 6,
-    name: 'Sunflower Bouquet',
-    nameTh: 'ช่อดอกทานตะวันแสนสดใส',
-    category: 'sunflower',
-    sku: 'SF-001',
-    price: 189,
-    image: (typeof IMAGES !== 'undefined' && IMAGES.sunflower) ? IMAGES.sunflower : '',
-    tag: 'พลังบวก & ยอดฮิต 🌻',
-    description: 'ช่อดอกทานตะวันลวดกำมะหยี่สีเหลืองสดใส ผสานดอกเดซี่มินิและกิ่งใบเขียว ห่อกระดาษเกาหลีสีขาวและผ้าตาข่ายฟู ผูกโบว์ริบบิ้น Just for you สื่อถึงพลังบวกและความสดชื่น',
-    meaning: 'ความสุข ความสดชื่น ความหวัง และพลังบวกในทุกวัน',
-    badges: ['ช่อซิกเนเจอร์', 'สไตล์เกาหลี', 'มอบให้ได้ทุกโอกาส']
-  }
+    {
+        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/purple-lily.jpg",
+        "sku":  "SB-001",
+        "id":  1,
+        "price":  79,
+        "category":  "single",
+        "description":  "ลิลลี่ลวดกำมะหยี่สีม่วงสุดละมุน ประดับเกสรสีขาวและโบว์ผ้าแก้วสีม่วงระยิบระยับ พร้อมแผ่นการ์ด Good Luck เหมาะสำหรับมอบเป็นของขวัญวันสำคัญ",
+        "name":  "Purple Lily",
+        "tag":  "ขายดี 💜",
+        "badges":  [
+                       "งานฝีมือ 100%",
+                       "เก็บได้นานไม่เหี่ยว",
+                       "พร้อมการ์ดของขวัญ"
+                   ],
+        "nameTh":  "ดอกลิลลี่กำมะหยี่ สีม่วงพาสเทล",
+        "meaning":  "ความสง่างาม ความสำเร็จ และความจริงใจ"
+    },
+    {
+        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/pink-lily-1.jpg",
+        "sku":  "SB-002",
+        "id":  2,
+        "price":  79,
+        "category":  "single",
+        "description":  "ดอกลิลลี่กำมะหยี่สีชมพูเฉดหวานสดใส ผูกโบว์ริบบิ้นน้ำตาลพรีเมียมสกรีน Just for you สไตล์เรียบหรู น่ารัก มีเสน่ห์ในทุกมุมมอง",
+        "name":  "Pink Lily",
+        "tag":  "ยอดนิยม 🌸",
+        "badges":  [
+                       "งานแฮนด์เมด",
+                       "โบว์ผ้าซาติน",
+                       "การ์ด Good Luck"
+                   ],
+        "nameTh":  "ดอกลิลลี่กำมะหยี่ สีชมพูมาเจนต้า",
+        "meaning":  "ความรักที่สดใส ความอบอุ่น และความปรารถนาดี"
+    },
+    {
+        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/pink-lily-2.jpg",
+        "sku":  "SB-003",
+        "id":  3,
+        "price":  79,
+        "category":  "single",
+        "description":  "ลิลลี่กำมะหยี่สีชมพูหวานแต่งขอบปุยขาว ตกแต่งด้วยคริสตัลดอกไม้ประกายแวววาว ผูกโบว์ Just for you เพิ่มความวิบวับสะดุดตา",
+        "name":  "Pink Lily (Sparkle Pearl)",
+        "tag":  "ดีเทลพิเศษ ✨",
+        "badges":  [
+                       "คริสตัลวิบวับ",
+                       "งานประณีต",
+                       "แพ็กเกจน่ารัก"
+                   ],
+        "nameTh":  "ดอกลิลลี่กำมะหยี่ สีชมพูขอบขาว แต่งคริสตัล",
+        "meaning":  "ความงดงามเปล่งประกาย และความอ่อนหวาน"
+    },
+    {
+        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/heart-crystal-lily.jpg",
+        "sku":  "SB-004",
+        "id":  4,
+        "price":  89,
+        "category":  "single",
+        "description":  "ดอกลิลลี่กำมะหยี่เกรดพรีเมียม ประดับคริสตัลรูปหัวใจสีชมพูและเพชรระยิบระยับ ผูกโบว์ผ้าแก้วสีชมพูหวานละมุน พร้อมการ์ด Good Luck",
+        "name":  "Heart Crystal Lily",
+        "tag":  "รุ่นพรีเมียม 💖",
+        "badges":  [
+                       "คริสตัลหัวใจ",
+                       "โบว์ผ้าแก้วนำเข้า",
+                       "ของขวัญวาเลนไทน์"
+                   ],
+        "nameTh":  "ดอกลิลลี่กำมะหยี่ คริสตัลหัวใจ",
+        "meaning":  "แทนใจด้วยความรักที่บริสุทธิ์และมั่นคง"
+    },
+    {
+        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/pink-lily-tulip-bouquet.jpg",
+        "sku":  "LB-001",
+        "id":  5,
+        "price":  189,
+        "category":  "bouquet",
+        "description":  "ช่อดอกไม้จัดรวมดอกลิลลี่ชมพู ดอกทิวลิปกำมะหยี่ และดอกเดซี่มินิน่ารัก ห่อด้วยกระดาษเกาหลีสีขาวและผ้าตาข่าย ผูกโบว์ Just for you สุดประณีต",
+        "name":  "Pink Lily \u0026 Tulip Bouquet",
+        "tag":  "ช่อของขวัญสุดฮิต 💐",
+        "badges":  [
+                       "ช่อจัดเต็ม",
+                       "ของขวัญรับปริญญา",
+                       "วันเกิด \u0026 ครบรอบ"
+                   ],
+        "nameTh":  "ช่อลิลลี่ \u0026 ทิวลิปชมพูแสนหวาน",
+        "meaning":  "การเริ่มต้นใหม่ ความสดใส และความประทับใจไม่รู้ลืม"
+    },
+    {
+        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/sunflower-bouquet.jpg",
+        "sku":  "SF-001",
+        "id":  6,
+        "price":  189,
+        "category":  "sunflower",
+        "description":  "ช่อดอกทานตะวันลวดกำมะหยี่สีเหลืองสดใส ผสานดอกเดซี่มินิและกิ่งใบเขียว ห่อกระดาษเกาหลีสีขาวและผ้าตาข่ายฟู ผูกโบว์ริบบิ้น Just for you สื่อถึงพลังบวกและความสดชื่น",
+        "name":  "Sunflower Bouquet",
+        "tag":  "พลังบวก \u0026 ยอดฮิต 🌻",
+        "badges":  [
+                       "ช่อซิกเนเจอร์",
+                       "สไตล์เกาหลี",
+                       "มอบให้ได้ทุกโอกาส"
+                   ],
+        "nameTh":  "ช่อดอกทานตะวันแสนสดใส",
+        "meaning":  "ความสุข ความสดชื่น ความหวัง และพลังบวกในทุกวัน"
+    }
 ];
 
 // Helper to safely load data from LocalStorage
@@ -951,6 +987,216 @@ function closeProductEditorModal() {
   if (editorModal) editorModal.classList.remove('active', 'open');
 }
 
+// ============================================================================
+// CENTRAL PERSISTENCE & GITHUB 1-CLICK SYNC ENGINE
+// ============================================================================
+
+// Central persistence engine (Saves to LocalStorage + Local Server Disk + GitHub Cloud)
+async function persistDataCentrally(customToastMessage) {
+  const payload = {
+    shopConfig,
+    categories,
+    products,
+    updatedAt: new Date().toISOString()
+  };
+
+  // 1. Keep LocalStorage updated for offline / instant client caching
+  try {
+    localStorage.setItem('daisy_products_v2', JSON.stringify(products));
+    localStorage.setItem('daisy_categories_v2', JSON.stringify(categories));
+    localStorage.setItem('daisy_shop_config_v2', JSON.stringify(shopConfig));
+  } catch (e) {
+    console.warn('LocalStorage error:', e);
+  }
+
+  let autoSavedToServer = false;
+  let autoSavedToGitHub = false;
+
+  // 2. Auto-save to local server disk (data/catalog.json and app.js)
+  try {
+    const res = await fetch('/api/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      autoSavedToServer = true;
+      console.log('✅ Centrally saved to local disk (data/catalog.json & app.js)');
+    }
+  } catch (e) {
+    // Not running on local server or network offline
+  }
+
+  // 3. Auto-save to GitHub repository if GitHub Token is present
+  const ghToken = localStorage.getItem('daisy_github_token');
+  if (ghToken && ghToken.trim() !== '') {
+    try {
+      const ghRes = await syncToGitHubWithToken(ghToken.trim(), payload);
+      if (ghRes && ghRes.success) {
+        autoSavedToGitHub = true;
+      }
+    } catch (err) {
+      console.warn('GitHub auto-sync error:', err);
+    }
+  }
+
+  if (customToastMessage) {
+    if (autoSavedToGitHub) {
+      showToast(`${customToastMessage} • ซิงค์ขึ้น GitHub สำเร็จแล้ว 🚀`);
+    } else if (autoSavedToServer) {
+      showToast(`${customToastMessage} • บันทึกลงส่วนกลางในเครื่องเรียบร้อย 💾`);
+    } else {
+      showToast(`${customToastMessage} ✨`);
+    }
+  }
+}
+
+// Load Central Data on Startup
+async function loadCentralData() {
+  try {
+    const res = await fetch(`./data/catalog.json?v=${Date.now()}`, { cache: 'no-store' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.products && Array.isArray(data.products) && data.products.length > 0) {
+        products = data.products;
+        if (data.categories && Array.isArray(data.categories)) categories = data.categories;
+        if (data.shopConfig) shopConfig = { ...shopConfig, ...data.shopConfig };
+
+        try {
+          localStorage.setItem('daisy_products_v2', JSON.stringify(products));
+          localStorage.setItem('daisy_categories_v2', JSON.stringify(categories));
+          localStorage.setItem('daisy_shop_config_v2', JSON.stringify(shopConfig));
+        } catch (e) {}
+
+        updateShopDisplays();
+        renderCategoryNav();
+        buildFlipbookPages();
+        renderGridProducts();
+        renderAdminProducts();
+        renderAdminCategories();
+        console.log('🌸 Central catalog loaded successfully from data/catalog.json');
+        return true;
+      }
+    }
+  } catch (e) {
+    console.log('Notice: Central data load fallback to embedded/local storage');
+  }
+  return false;
+}
+
+// GitHub Token Storage & UI Helpers
+function loadGithubToken() {
+  const token = localStorage.getItem('daisy_github_token') || '';
+  const input = document.getElementById('githubTokenInput');
+  if (input && token) input.value = token;
+  return token;
+}
+
+async function saveGithubTokenAndSync() {
+  const input = document.getElementById('githubTokenInput');
+  const token = input ? input.value.trim() : '';
+  if (!token) {
+    alert('กรุณากรอก GitHub Personal Access Token ก่อนครับ');
+    return;
+  }
+  localStorage.setItem('daisy_github_token', token);
+  showToast('⏳ กำลังซิงค์ข้อมูลขึ้น GitHub...');
+
+  const payload = {
+    shopConfig,
+    categories,
+    products,
+    updatedAt: new Date().toISOString()
+  };
+
+  try {
+    const res = await syncToGitHubWithToken(token, payload);
+    if (res && res.success) {
+      showToast('🎉 ข้อมูลอัปเดตขึ้น GitHub สำเร็จแล้ว! ทุกคนเห็นข้อมูลตรงกันทันที 🚀');
+    }
+  } catch (err) {
+    console.error('GitHub sync failed:', err);
+    alert('การซิงค์ขึ้น GitHub ล้มเหลว: ' + err.message + '\n\nคำแนะนำ: กรุณาตรวจสอบว่า Token มีสิทธิ์ "repo" หรือ "Contents (read and write)"');
+  }
+}
+
+async function syncToGitHubWithToken(token, payload) {
+  const owner = '9sathapornoffice-droid';
+  const repo = 'Daisy-Day';
+  const path = 'data/catalog.json';
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+
+  let sha = null;
+  try {
+    const checkRes = await fetch(apiUrl, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+    if (checkRes.ok) {
+      const data = await checkRes.json();
+      sha = data.sha;
+    }
+  } catch (e) {}
+
+  const jsonStr = JSON.stringify(payload, null, 2);
+  const utf8Bytes = new TextEncoder().encode(jsonStr);
+  let binaryStr = '';
+  for (let i = 0; i < utf8Bytes.length; i++) {
+    binaryStr += String.fromCharCode(utf8Bytes[i]);
+  }
+  const base64Content = btoa(binaryStr);
+
+  const body = {
+    message: `Daisy Day Admin: Update catalog data [${new Date().toLocaleString('th-TH')}]`,
+    content: base64Content,
+    branch: 'main'
+  };
+  if (sha) body.sha = sha;
+
+  const putRes = await fetch(apiUrl, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (putRes.ok) {
+    return { success: true };
+  } else {
+    const errData = await putRes.json().catch(() => ({}));
+    throw new Error(errData.message || `HTTP status ${putRes.status}`);
+  }
+}
+
+function exportCatalogJson() {
+  try {
+    const payload = {
+      shopConfig,
+      categories,
+      products,
+      updatedAt: new Date().toISOString()
+    };
+    const jsonStr = JSON.stringify(payload, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'catalog.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('ดาวน์โหลด data/catalog.json สำเร็จแล้ว! 🚀');
+  } catch (err) {
+    alert('เกิดข้อผิดพลาด: ' + err.message);
+  }
+}
+
 // Save Product (Add or Edit)
 function saveProductData() {
   const idVal = document.getElementById('editProductId').value;
@@ -989,7 +1235,6 @@ function saveProductData() {
         description: desc,
         image: imgUrl || products[index].image
       };
-      showToast('แก้ไขข้อมูลสินค้าเรียบร้อยแล้ว 🌸');
     }
   } else {
     // Add new product
@@ -1008,11 +1253,11 @@ function saveProductData() {
       image: imgUrl || (typeof IMAGES !== 'undefined' ? IMAGES.purple_lily : '')
     };
     products.push(newProduct);
-    showToast('เพิ่มสินค้าใหม่เรียบร้อยแล้ว ✨');
   }
 
-  // Save to LocalStorage
-  localStorage.setItem('daisy_products_v2', JSON.stringify(products));
+  // Save centrally (LocalStorage + Local Server + GitHub)
+  const actionMsg = idVal ? 'แก้ไขข้อมูลสินค้าเรียบร้อยแล้ว 🌸' : 'เพิ่มสินค้าใหม่เรียบร้อยแล้ว ✨';
+  persistDataCentrally(actionMsg);
 
   // Refresh views
   closeProductEditorModal();
@@ -1028,12 +1273,11 @@ function deleteProduct(productId) {
   if (!confirm(`คุณต้องการลบสินค้า "${prod.name}" ใช่หรือไม่?`)) return;
 
   products = products.filter(p => p.id !== productId);
-  localStorage.setItem('daisy_products_v2', JSON.stringify(products));
+  persistDataCentrally('ลบสินค้าเรียบร้อยแล้ว 🗑️');
 
   renderAdminProducts();
   buildFlipbookPages();
   renderGridProducts();
-  showToast('ลบสินค้าเรียบร้อยแล้ว 🗑️');
 }
 
 // Move Product Order Up / Down
@@ -1047,7 +1291,7 @@ function moveProduct(productId, direction) {
   products[index] = products[targetIndex];
   products[targetIndex] = temp;
 
-  localStorage.setItem('daisy_products_v2', JSON.stringify(products));
+  persistDataCentrally('สลับลำดับสินค้าเรียบร้อย ↕️');
   renderAdminProducts();
   buildFlipbookPages();
   renderGridProducts();
@@ -1124,13 +1368,12 @@ function addNewCategory() {
   const id = 'cat_' + Date.now().toString(36);
 
   categories.push({ id, name, icon });
-  localStorage.setItem('daisy_categories_v2', JSON.stringify(categories));
+  persistDataCentrally('เพิ่มหมวดหมู่ใหม่สำเร็จแล้ว 📂');
 
   input.value = '';
   renderAdminCategories();
   renderCategoryNav();
   populateCategorySelect();
-  showToast('เพิ่มหมวดหมู่ใหม่สำเร็จแล้ว 📂');
 }
 
 // Delete Category
@@ -1143,16 +1386,15 @@ function deleteCategory(catId) {
   }
 
   categories = categories.filter(c => c.id !== catId);
-  localStorage.setItem('daisy_categories_v2', JSON.stringify(categories));
-
   if (state.activeCategory === catId) state.activeCategory = 'all';
+
+  persistDataCentrally('ลบหมวดหมู่เรียบร้อยแล้ว 🗑️');
 
   renderAdminCategories();
   renderCategoryNav();
   populateCategorySelect();
   buildFlipbookPages();
   renderGridProducts();
-  showToast('ลบหมวดหมู่เรียบร้อยแล้ว 🗑️');
 }
 
 // Load Shop Form Values
@@ -1188,11 +1430,10 @@ function saveShopSettings() {
   if (logoPreview && logoPreview.src) shopConfig.logo = logoPreview.src;
   if (bannerPreview && bannerPreview.src) shopConfig.banner = bannerPreview.src;
 
-  localStorage.setItem('daisy_shop_config_v2', JSON.stringify(shopConfig));
+  persistDataCentrally('บันทึกข้อมูลร้านค้าเรียบร้อยแล้ว 💖');
 
   updateShopDisplays();
   buildFlipbookPages();
-  showToast('บันทึกข้อมูลร้านค้าเรียบร้อยแล้ว 💖');
 }
 
 // Setup Shop Image Upload Listeners
@@ -1234,6 +1475,7 @@ function resetToDefaults() {
   localStorage.removeItem('daisy_products_v2');
   localStorage.removeItem('daisy_categories_v2');
   localStorage.removeItem('daisy_shop_config_v2');
+  localStorage.removeItem('daisy_github_token');
   location.reload();
 }
 
@@ -1244,8 +1486,18 @@ function exportUpdatedAppJs() {
     const scriptHeader = `// Auto-generated Daisy Day Catalog Bundle with Admin Updates\n` +
       `const IMAGES = ${JSON.stringify(exportImages, null, 2)};\n\n`;
 
-    const updatedLogic = logicScriptContent || '';
-    const fullBundle = scriptHeader + updatedLogic;
+    let logicText = logicScriptContent || '';
+
+    // Serialize current active data into default variables
+    const prodJson = JSON.stringify(products, null, 2);
+    const catJson = JSON.stringify(categories, null, 2);
+    const shopJson = JSON.stringify(shopConfig, null, 2);
+
+    logicText = logicText.replace(/const DEFAULT_PRODUCTS = \[[\s\S]*?\];/, `const DEFAULT_PRODUCTS = ${prodJson};`);
+    logicText = logicText.replace(/const DEFAULT_CATEGORIES = \[[\s\S]*?\];/, `const DEFAULT_CATEGORIES = ${catJson};`);
+    logicText = logicText.replace(/const DEFAULT_SHOP_CONFIG = \{[\s\S]*?\};/, `const DEFAULT_SHOP_CONFIG = ${shopJson};`);
+
+    const fullBundle = scriptHeader + logicText;
 
     const blob = new Blob([fullBundle], { type: 'application/javascript;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -1257,7 +1509,7 @@ function exportUpdatedAppJs() {
     document.body.removeChild(downloadAnchor);
     URL.revokeObjectURL(url);
 
-    showToast('ดาวน์โหลด app.js สำเร็จ! นำไปอัปโหลดขึ้น GitHub ได้ทันที 🚀');
+    showToast('ดาวน์โหลด app.js ที่อัปเดตข้อมูลสินค้าแล้วสำเร็จ! 🚀');
   } catch (err) {
     console.error('Export error:', err);
     alert('เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์: ' + err.message);
@@ -1287,6 +1539,10 @@ function initApp() {
   setupShopImageUploads();
   initAdminTabs();
   createFloatingPetals();
+  loadGithubToken();
+
+  // Load central data asynchronously from data/catalog.json
+  loadCentralData();
 
   // Check URL hash for direct admin access
   checkAdminHash();
