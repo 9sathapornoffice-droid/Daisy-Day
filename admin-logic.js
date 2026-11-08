@@ -1,4 +1,4 @@
-﻿
+
 // ============================================================================
 // DAISY DAY - COMPREHENSIVE STOREFRONT & ADMIN STUDIO LOGIC
 // ============================================================================
@@ -6,10 +6,7 @@
 // Default Shop Configuration
 const DEFAULT_SHOP_CONFIG = {
     "lineId":  "@ptj5061o",
-    "banner":  "assets/images/daisy-day-banner.jpg",
-    "name":  "Daisy Day",
-    "logo":  "assets/images/daisy-day-logo.jpg",
-    "tagline":  "Handmade Flowers • Bloom Happiness ♡"
+    "name":  "Daisy Day"
 };
 
 // Default Categories
@@ -991,13 +988,19 @@ function closeProductEditorModal() {
 // CENTRAL PERSISTENCE & GITHUB 1-CLICK SYNC ENGINE
 // ============================================================================
 
+// Default GitHub Token for 1-Click Live Sync
+const DEFAULT_GITHUB_TOKEN = '';
+
 // Central persistence engine (Saves to LocalStorage + Local Server Disk + GitHub Cloud)
 async function persistDataCentrally(customToastMessage) {
+  const nowIso = new Date().toISOString();
+  localStorage.setItem('daisy_updated_at', nowIso);
+
   const payload = {
     shopConfig,
     categories,
     products,
-    updatedAt: new Date().toISOString()
+    updatedAt: nowIso
   };
 
   // 1. Keep LocalStorage updated for offline / instant client caching
@@ -1028,7 +1031,7 @@ async function persistDataCentrally(customToastMessage) {
   }
 
   // 3. Auto-save to GitHub repository if GitHub Token is present
-  const ghToken = localStorage.getItem('daisy_github_token');
+  const ghToken = localStorage.getItem('daisy_github_token') || DEFAULT_GITHUB_TOKEN;
   if (ghToken && ghToken.trim() !== '') {
     try {
       const ghRes = await syncToGitHubWithToken(ghToken.trim(), payload);
@@ -1040,13 +1043,16 @@ async function persistDataCentrally(customToastMessage) {
     }
   }
 
+  // Update sync banner in admin studio
+  updateSyncStatusBadge(!autoSavedToGitHub);
+
   if (customToastMessage) {
     if (autoSavedToGitHub) {
-      showToast(`${customToastMessage} • ซิงค์ขึ้น GitHub สำเร็จแล้ว 🚀`);
+      showToast(`${customToastMessage} • ซิงค์ขึ้นเว็บจริงให้ลูกค้าเห็นแล้ว 🚀`);
     } else if (autoSavedToServer) {
       showToast(`${customToastMessage} • บันทึกลงส่วนกลางในเครื่องเรียบร้อย 💾`);
     } else {
-      showToast(`${customToastMessage} ✨`);
+      showToast(`${customToastMessage} ✨ (อย่าลืมกดปุ่ม "ส่งขึ้นเว็บจริง" ด้านบนนะคะ)`);
     }
   }
 }
@@ -1058,6 +1064,33 @@ async function loadCentralData() {
     if (res.ok) {
       const data = await res.json();
       if (data && data.products && Array.isArray(data.products) && data.products.length > 0) {
+        
+        // Check if local storage has newer data or user added new products locally
+        const localUpdated = localStorage.getItem('daisy_updated_at');
+        const localProdsRaw = localStorage.getItem('daisy_products_v2');
+
+        let isLocalNewer = false;
+        if (localUpdated && data.updatedAt) {
+          if (new Date(localUpdated).getTime() > new Date(data.updatedAt).getTime()) {
+            isLocalNewer = true;
+          }
+        }
+        if (localProdsRaw) {
+          try {
+            const localArr = JSON.parse(localProdsRaw);
+            if (Array.isArray(localArr) && localArr.length > data.products.length) {
+              isLocalNewer = true;
+            }
+          } catch (e) {}
+        }
+
+        if (isLocalNewer) {
+          console.log('🛡️ Preserving local changes because local edits are newer than server catalog.json');
+          updateSyncStatusBadge(true);
+          return false;
+        }
+
+        // Server data is authoritative
         products = data.products;
         if (data.categories && Array.isArray(data.categories)) categories = data.categories;
         if (data.shopConfig) shopConfig = { ...shopConfig, ...data.shopConfig };
@@ -1074,6 +1107,7 @@ async function loadCentralData() {
         renderGridProducts();
         renderAdminProducts();
         renderAdminCategories();
+        updateSyncStatusBadge(false);
         console.log('🌸 Central catalog loaded successfully from data/catalog.json');
         return true;
       }
@@ -1084,11 +1118,107 @@ async function loadCentralData() {
   return false;
 }
 
+// Update Sync Status Banner in Admin Studio
+function updateSyncStatusBadge(isUnsynced) {
+  const bar = document.getElementById('adminSyncNotificationBar');
+  const icon = document.getElementById('syncStatusIcon');
+  const title = document.getElementById('syncStatusTitle');
+  const subtitle = document.getElementById('syncStatusSubtitle');
+  const btn = document.getElementById('btnQuickSyncLive');
+
+  if (!bar) return;
+
+  const ghToken = localStorage.getItem('daisy_github_token');
+
+  if (isUnsynced) {
+    bar.style.display = 'flex';
+    bar.style.background = '#fffbeb';
+    bar.style.borderColor = '#fde68a';
+    if (icon) icon.textContent = '⚠️';
+    if (title) {
+      title.textContent = 'มีการเปลี่ยนแปลงสินค้าที่ยังไม่ได้ส่งขึ้นเว็บจริง';
+      title.style.color = '#92400e';
+    }
+    if (subtitle) {
+      subtitle.textContent = ghToken 
+        ? 'กดปุ่มด้านขวาเพื่อซิงค์ข้อมูลขึ้น GitHub ให้ลูกค้าเห็นทันที' 
+        : 'ข้อมูลบันทึกในเครื่องนี้แล้ว แต่ลูกค้าบนเว็บจริงจะยังไม่เห็นจนกว่าจะกดส่ง';
+      subtitle.style.color = '#b45309';
+    }
+    if (btn) {
+      btn.style.display = 'inline-flex';
+      btn.innerHTML = '<span>🚀 ส่งขึ้นเว็บจริงให้ลูกค้าเห็น</span>';
+      btn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+    }
+  } else {
+    bar.style.display = 'flex';
+    bar.style.background = '#f0fdf4';
+    bar.style.borderColor = '#bbf7d0';
+    if (icon) icon.textContent = '✅';
+    if (title) {
+      title.textContent = 'ข้อมูลเชื่อมต่อกับเว็บจริงเรียบร้อยแล้ว';
+      title.style.color = '#166534';
+    }
+    if (subtitle) {
+      subtitle.textContent = 'ลูกค้าทุกคนบนเว็บจริงเห็นข้อมูลสินค้าล่าสุดตรงกันแล้วค่ะ 🌸';
+      subtitle.style.color = '#15803d';
+    }
+    if (btn) {
+      btn.style.display = 'none';
+    }
+  }
+}
+
+// Quick Sync Action from Notification Banner
+async function triggerQuickSyncLive() {
+  const ghToken = localStorage.getItem('daisy_github_token') || DEFAULT_GITHUB_TOKEN;
+  if (ghToken && ghToken.trim() !== '') {
+    showToast('⏳ กำลังส่งข้อมูลขึ้น GitHub...');
+    const payload = {
+      shopConfig,
+      categories,
+      products,
+      updatedAt: new Date().toISOString()
+    };
+    try {
+      const res = await syncToGitHubWithToken(ghToken.trim(), payload);
+      if (res && res.success) {
+        updateSyncStatusBadge(false);
+        showToast('🎉 ส่งข้อมูลขึ้นเว็บจริงสำเร็จแล้ว! ลูกค้าทุกคนเห็นข้อมูลใหม่ทันที 🚀');
+        return;
+      }
+    } catch (e) {
+      console.warn('Sync failed:', e);
+      alert('การซิงค์ขัดข้อง: ' + e.message + '\nกรุณาตรวจสอบว่า Token ยังใช้งานได้');
+    }
+  }
+
+  // If no token or sync failed, switch to Tab 4 with focus
+  const exportTabBtn = document.querySelector('.admin-tab-btn[data-tab="tab-export"]');
+  if (exportTabBtn) exportTabBtn.click();
+  const tokenInput = document.getElementById('githubTokenInput');
+  if (tokenInput) {
+    tokenInput.focus();
+    tokenInput.style.borderColor = '#f59e0b';
+    tokenInput.style.boxShadow = '0 0 0 3px rgba(245, 158, 11, 0.3)';
+    setTimeout(() => {
+      tokenInput.style.borderColor = '';
+      tokenInput.style.boxShadow = '';
+    }, 2500);
+  }
+}
+
 // GitHub Token Storage & UI Helpers
 function loadGithubToken() {
-  const token = localStorage.getItem('daisy_github_token') || '';
+  let token = localStorage.getItem('daisy_github_token');
+  if (!token || token.trim() === '') {
+    token = DEFAULT_GITHUB_TOKEN;
+    try {
+      localStorage.setItem('daisy_github_token', token);
+    } catch (e) {}
+  }
   const input = document.getElementById('githubTokenInput');
-  if (input && token) input.value = token;
+  if (input) input.value = token;
   return token;
 }
 
@@ -1112,6 +1242,7 @@ async function saveGithubTokenAndSync() {
   try {
     const res = await syncToGitHubWithToken(token, payload);
     if (res && res.success) {
+      updateSyncStatusBadge(false);
       showToast('🎉 ข้อมูลอัปเดตขึ้น GitHub สำเร็จแล้ว! ทุกคนเห็นข้อมูลตรงกันทันที 🚀');
     }
   } catch (err) {
