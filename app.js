@@ -744,7 +744,7 @@ function closeLightbox() {
 }
 
 // Toast Notification
-function showToast(text) {
+function showToast(text, duration = 3000) {
   const toast = document.getElementById('toastNotice');
   const msg = document.getElementById('toastMessage');
   if (!toast || !msg) return;
@@ -754,7 +754,7 @@ function showToast(text) {
   clearTimeout(showToast.timeout);
   showToast.timeout = setTimeout(() => {
     toast.classList.remove('show');
-  }, 2600);
+  }, duration);
 }
 
 // Switch View Modes
@@ -1097,7 +1097,7 @@ async function persistDataCentrally(customToastMessage) {
 
   if (customToastMessage) {
     if (autoSavedToGitHub) {
-      showToast(`${customToastMessage} • ซิงค์ขึ้นเว็บจริงให้ลูกค้าเห็นแล้ว 🚀`);
+      showToast(`${customToastMessage} • ซิงค์ขึ้น GitHub เรียบร้อย (กรุณารอประมาณ 30 วินาทีเพื่อให้ข้อมูลอัปเดตบนเว็บจริงนะคะ) 🚀`, 5000);
     } else if (autoSavedToServer) {
       showToast(`${customToastMessage} • บันทึกลงส่วนกลางในเครื่องเรียบร้อย 💾`);
     } else {
@@ -1240,7 +1240,7 @@ function updateSyncStatusBadge(isUnsynced) {
       title.style.color = '#166534';
     }
     if (subtitle) {
-      subtitle.textContent = 'ลูกค้าทุกคนบนเว็บจริงเห็นข้อมูลสินค้าล่าสุดตรงกันแล้วค่ะ 🌸';
+      subtitle.textContent = 'บันทึกขึ้น GitHub เรียบร้อยแล้ว (หากเพิ่งบันทึก กรุณารอประมาณ 30 วินาทีเพื่อให้เว็บอัปเดตข้อมูลนะคะ) 🌸';
       subtitle.style.color = '#15803d';
     }
     if (btn) {
@@ -1264,7 +1264,7 @@ async function triggerQuickSyncLive() {
       const res = await syncToGitHubWithToken(ghToken.trim(), payload);
       if (res && res.success) {
         updateSyncStatusBadge(false);
-        showToast('🎉 ส่งข้อมูลขึ้นเว็บจริงสำเร็จแล้ว! ลูกค้าทุกคนเห็นข้อมูลใหม่ทันที 🚀');
+        showToast('🎉 ส่งข้อมูลขึ้น GitHub สำเร็จแล้ว! กรุณารอประมาณ 30 วินาทีเพื่อให้ข้อมูลอัปเดตบนเว็บจริงนะคะ 🚀', 5000);
         return;
       }
     } catch (e) {
@@ -1323,7 +1323,7 @@ async function saveGithubTokenAndSync() {
     const res = await syncToGitHubWithToken(token, payload);
     if (res && res.success) {
       updateSyncStatusBadge(false);
-      showToast('🎉 ข้อมูลอัปเดตขึ้น GitHub สำเร็จแล้ว! ทุกคนเห็นข้อมูลตรงกันทันที 🚀');
+      showToast('🎉 บันทึกขึ้น GitHub สำเร็จแล้ว! กรุณารอประมาณ 30 วินาทีเพื่อให้ข้อมูลอัปเดตบนเว็บจริง 🚀', 5000);
     }
   } catch (err) {
     console.error('GitHub sync failed:', err);
