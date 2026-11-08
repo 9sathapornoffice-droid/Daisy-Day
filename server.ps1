@@ -42,11 +42,26 @@ try {
                 $body = $reader.ReadToEnd()
                 $reader.Close()
                 
-                # 1. Save data/catalog.json
+                # Helper to format JSON array properly (0, 1, or multiple items)
+                function Format-JsonArray($items, $depth = 10) {
+                    $arr = @($items)
+                    if ($arr.Count -eq 0) {
+                        return "[]"
+                    } elseif ($arr.Count -eq 1) {
+                        return "[$($arr[0] | ConvertTo-Json -Depth $depth)]"
+                    } else {
+                        return ($arr | ConvertTo-Json -Depth $depth)
+                    }
+                }
+                
+                # 1. Save data/catalog.json and root catalog.json
                 $dataDir = Join-Path $root "data"
                 if (-not (Test-Path $dataDir)) { New-Item -ItemType Directory -Path $dataDir -Force | Out-Null }
                 $catalogPath = Join-Path $dataDir "catalog.json"
                 [System.IO.File]::WriteAllText($catalogPath, $body, (New-Object System.Text.UTF8Encoding($false)))
+                
+                $rootCatalogPath = Join-Path $root "catalog.json"
+                [System.IO.File]::WriteAllText($rootCatalogPath, $body, (New-Object System.Text.UTF8Encoding($false)))
                 
                 # 2. Update DEFAULT_PRODUCTS, DEFAULT_CATEGORIES, DEFAULT_SHOP_CONFIG in admin-logic.js
                 $adminLogicPath = Join-Path $root "admin-logic.js"
@@ -58,17 +73,17 @@ try {
                 if (Test-Path $adminLogicPath) {
                     $logicText = [System.IO.File]::ReadAllText($adminLogicPath, (New-Object System.Text.UTF8Encoding($false)))
                     
-                    if ($dataObj.products) {
-                        $prodJson = ($dataObj.products | ConvertTo-Json -Depth 10)
-                        $logicText = [System.Text.RegularExpressions.Regex]::Replace($logicText, '(?s)const DEFAULT_PRODUCTS = \[.*?\];', "const DEFAULT_PRODUCTS = $prodJson;")
+                    if ($null -ne $dataObj.products) {
+                        $prodJson = Format-JsonArray $dataObj.products
+                        $logicText = [System.Text.RegularExpressions.Regex]::Replace($logicText, '(?s)const DEFAULT_PRODUCTS = \[.*?\];', { param($m) "const DEFAULT_PRODUCTS = $prodJson;" })
                     }
-                    if ($dataObj.categories) {
-                        $catJson = ($dataObj.categories | ConvertTo-Json -Depth 10)
-                        $logicText = [System.Text.RegularExpressions.Regex]::Replace($logicText, '(?s)const DEFAULT_CATEGORIES = \[.*?\];', "const DEFAULT_CATEGORIES = $catJson;")
+                    if ($null -ne $dataObj.categories) {
+                        $catJson = Format-JsonArray $dataObj.categories
+                        $logicText = [System.Text.RegularExpressions.Regex]::Replace($logicText, '(?s)const DEFAULT_CATEGORIES = \[.*?\];', { param($m) "const DEFAULT_CATEGORIES = $catJson;" })
                     }
-                    if ($dataObj.shopConfig) {
+                    if ($null -ne $dataObj.shopConfig) {
                         $shopJson = ($dataObj.shopConfig | ConvertTo-Json -Depth 10)
-                        $logicText = [System.Text.RegularExpressions.Regex]::Replace($logicText, '(?s)const DEFAULT_SHOP_CONFIG = \{.*?\};', "const DEFAULT_SHOP_CONFIG = $shopJson;")
+                        $logicText = [System.Text.RegularExpressions.Regex]::Replace($logicText, '(?s)const DEFAULT_SHOP_CONFIG = \{.*?\};', { param($m) "const DEFAULT_SHOP_CONFIG = $shopJson;" })
                     }
                     
                     [System.IO.File]::WriteAllText($adminLogicPath, $logicText, (New-Object System.Text.UTF8Encoding($false)))
