@@ -1,10 +1,10 @@
 {
   "shopConfig": {
-    "name": "Daisy Day",
-    "tagline": "Handmade Flowers • Bloom Happiness ♡",
     "lineId": "@ptj5061o",
+    "banner": "assets/images/daisy-day-banner.jpg",
+    "name": "Daisy Day",
     "logo": "assets/images/daisy-day-logo.jpg",
-    "banner": "assets/images/daisy-day-banner.jpg"
+    "tagline": "Handmade Flowers • Bloom Happiness ♡"
   },
   "categories": [
     {
@@ -143,5 +143,5 @@
       "meaning": "ความสุข ความสดชื่น ความหวัง และพลังบวกในทุกวัน"
     }
   ],
-  "updatedAt": "2026-11-08T13:46:44.110Z"
+  "updatedAt": "2026-11-08T14:00:32.751Z"
 }
