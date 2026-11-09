@@ -288,28 +288,34 @@
 
             <div class="admin-form-group">
               <label class="admin-form-label">โลโก้ร้านค้า (Shop Logo):</label>
-              <div class="admin-file-upload-wrap">
-                <img id="adminLogoPreview" src="" class="admin-file-preview" alt="Logo Preview">
-                <div>
-                  <label class="admin-file-btn">
-                    <span>📁 เลือกรูปโลโก้ใหม่</span>
-                    <input type="file" id="adminLogoFileInput" accept="image/*" style="display: none;">
-                  </label>
-                  <div style="font-size: 11px; color: #8e7a9e; margin-top: 4px;">แนะนำรูปสี่เหลี่ยมจัตุรัส</div>
+              <div class="admin-file-upload-wrap" style="align-items: flex-start; gap: 14px;">
+                <img id="adminLogoPreview" src="" class="admin-file-preview" style="width: 64px; height: 64px; object-fit: cover; border-radius: 12px; border: 2px solid #e2d1f0;" alt="Logo Preview">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                  <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                    <label class="admin-file-btn" style="margin: 0; white-space: nowrap; cursor: pointer;">
+                      <span>📁 อัปโหลดโลโก้จากเครื่อง</span>
+                      <input type="file" id="adminLogoFileInput" accept="image/*" style="display: none;">
+                    </label>
+                    <span id="logoStatusText" style="font-size: 11px; color: #16a34a; font-weight: 600; display: none;">✓ ได้ลิงก์แล้ว</span>
+                  </div>
+                  <input type="text" id="adminLogoUrlInput" class="admin-input" placeholder="หรือวางลิงก์โลโก้ เช่น assets/images/... หรือ https://..." style="font-size: 12px; padding: 7px 10px;">
                 </div>
               </div>
             </div>
 
             <div class="admin-form-group">
               <label class="admin-form-label">แบนเนอร์พื้นหลังหน้าปก (Cover Banner):</label>
-              <div class="admin-file-upload-wrap">
-                <img id="adminBannerPreview" src="" class="admin-file-preview" alt="Banner Preview">
-                <div>
-                  <label class="admin-file-btn">
-                    <span>📁 เลือกรูปแบนเนอร์ใหม่</span>
-                    <input type="file" id="adminBannerFileInput" accept="image/*" style="display: none;">
-                  </label>
-                  <div style="font-size: 11px; color: #8e7a9e; margin-top: 4px;">รูปลายตารางกิงแฮมหรือพื้นหลังที่ชอบ</div>
+              <div class="admin-file-upload-wrap" style="align-items: flex-start; gap: 14px;">
+                <img id="adminBannerPreview" src="" class="admin-file-preview" style="width: 64px; height: 64px; object-fit: cover; border-radius: 12px; border: 2px solid #e2d1f0;" alt="Banner Preview">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                  <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                    <label class="admin-file-btn" style="margin: 0; white-space: nowrap; cursor: pointer;">
+                      <span>📁 อัปโหลดแบนเนอร์จากเครื่อง</span>
+                      <input type="file" id="adminBannerFileInput" accept="image/*" style="display: none;">
+                    </label>
+                    <span id="bannerStatusText" style="font-size: 11px; color: #16a34a; font-weight: 600; display: none;">✓ ได้ลิงก์แล้ว</span>
+                  </div>
+                  <input type="text" id="adminBannerUrlInput" class="admin-input" placeholder="หรือวางลิงก์แบนเนอร์ เช่น assets/images/... หรือ https://..." style="font-size: 12px; padding: 7px 10px;">
                 </div>
               </div>
             </div>
@@ -421,17 +427,26 @@
       <div class="admin-body" style="padding: 16px 20px;">
         <input type="hidden" id="editProductId">
 
-        <!-- Image Upload Preview -->
+        <!-- Image Upload & URL Section -->
         <div class="admin-form-group">
-          <label class="admin-form-label">รูปภาพสินค้า (อัปโหลดรูปจากเครื่องได้ทันที):</label>
-          <div class="admin-file-upload-wrap">
-            <img id="editProductImgPreview" src="" class="admin-file-preview" style="width: 72px; height: 72px;" alt="Product Preview">
-            <div>
-              <label class="admin-file-btn">
-                <span>📷 เลือกรูปถ่ายสินค้า</span>
-                <input type="file" id="editProductFileInput" accept="image/*" style="display: none;">
-              </label>
-              <div style="font-size: 11px; color: #8e7a9e; margin-top: 4px;">รองรับทั้งไฟล์ JPG, PNG และรูปถ่ายจากมือถือ</div>
+          <label class="admin-form-label">รูปภาพสินค้า (อัปโหลดจากเครื่อง หรือ วางลิงก์รูป):</label>
+          <div class="admin-file-upload-wrap" style="align-items: flex-start; gap: 14px;">
+            <div style="position: relative; flex-shrink: 0;">
+              <img id="editProductImgPreview" src="" class="admin-file-preview" style="width: 76px; height: 76px; object-fit: cover; border-radius: 12px; border: 2px solid #e2d1f0;" alt="Product Preview">
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <label class="admin-file-btn" style="margin: 0; white-space: nowrap; cursor: pointer;">
+                  <span>📷 อัปโหลดรูปจากเครื่อง</span>
+                  <input type="file" id="editProductFileInput" accept="image/*" style="display: none;">
+                </label>
+                <span id="uploadStatusText" style="font-size: 11px; color: #16a34a; font-weight: 600; display: none;">✓ ได้ลิงก์แล้ว</span>
+              </div>
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <input type="text" id="editProductImageUrl" class="admin-input" placeholder="หรือวางลิงก์รูปภาพ เช่น https://... หรือ assets/images/..." style="font-size: 12px; padding: 7px 10px;">
+                <button type="button" class="admin-action-btn" id="btnCopyImgUrl" onclick="copyProductImageUrl()" title="คัดลอกลิงก์รูปภาพ" style="flex-shrink: 0; padding: 6px 10px; font-size: 12px; cursor: pointer;">📋 คัดลอก</button>
+              </div>
+              <div style="font-size: 11px; color: #8e7a9e;">* อัปโหลดรูปจากเครื่องจะแปลงเป็นลิงก์ไฟล์ให้อัตโนมัติ หรือนำลิงก์รูปมาวางได้เลยค่ะ</div>
             </div>
           </div>
         </div>

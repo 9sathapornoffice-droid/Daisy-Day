@@ -8,9 +8,10 @@ $listener.Prefixes.Add($prefix)
 try {
     $listener.Start()
     Write-Host "==========================================================" -ForegroundColor Magenta
-    Write-Host " 🌸 Bloom & Pastels Web Catalog is Running!" -ForegroundColor Yellow
-    Write-Host " 🔗 Link: http://localhost:$port/" -ForegroundColor Green
-    Write-Host " 💾 Central Auto-Save API: http://localhost:$port/api/save" -ForegroundColor Cyan
+    Write-Host " Daisy Day Web Catalog is Running!" -ForegroundColor Yellow
+    Write-Host " Link: http://localhost:$port/" -ForegroundColor Green
+    Write-Host " Central Auto-Save API: http://localhost:$port/api/save" -ForegroundColor Cyan
+    Write-Host " Image Upload API: http://localhost:$port/api/upload" -ForegroundColor Cyan
     Write-Host " Press Ctrl+C in this window to stop server" -ForegroundColor Gray
     Write-Host "==========================================================" -ForegroundColor Magenta
     
@@ -95,7 +96,71 @@ try {
                     }
                 }
                 
-                $resJson = '{"success":true,"message":"บันทึกข้อมูลลงส่วนกลาง (data/catalog.json และ app.js) เรียบร้อยแล้ว"}'
+                $resJson = '{"success":true,"message":"Catalog data saved successfully"}'
+                $bytes = (New-Object System.Text.UTF8Encoding($false)).GetBytes($resJson)
+                $response.ContentType = "application/json; charset=utf-8"
+                $response.StatusCode = 200
+                $response.OutputStream.Write($bytes, 0, $bytes.Length)
+            } catch {
+                $errJson = '{"success":false,"error":"' + $_.Exception.Message.Replace('"', '\"') + '"}'
+                $bytes = (New-Object System.Text.UTF8Encoding($false)).GetBytes($errJson)
+                $response.ContentType = "application/json; charset=utf-8"
+                $response.StatusCode = 500
+                $response.OutputStream.Write($bytes, 0, $bytes.Length)
+            }
+            $response.Close()
+            continue
+        }
+        
+        # Handle Image Upload API (Save file into assets/images/ and return web link)
+        if ($request.HttpMethod -eq "POST" -and ($urlPath -eq "api/upload" -or $urlPath -eq "api/upload/")) {
+            try {
+                $reader = New-Object System.IO.StreamReader($request.InputStream, (New-Object System.Text.UTF8Encoding($false)))
+                $body = $reader.ReadToEnd()
+                $reader.Close()
+                
+                $uploadObj = $body | ConvertFrom-Json
+                $rawBase64 = $uploadObj.imageBase64
+                if ([string]::IsNullOrEmpty($rawBase64)) {
+                    throw "No image data received"
+                }
+                
+                # Determine extension
+                $ext = ".jpg"
+                if ($rawBase64 -match '^data:image\/png') { $ext = ".png" }
+                elseif ($rawBase64 -match '^data:image\/webp') { $ext = ".webp" }
+                
+                # Sanitize filename or generate one
+                $cleanName = $uploadObj.filename
+                if ([string]::IsNullOrEmpty($cleanName)) {
+                    $cleanName = "prod-" + [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() + $ext
+                } else {
+                    $cleanName = [System.IO.Path]::GetFileNameWithoutExtension($cleanName)
+                    $cleanName = ($cleanName -replace '[^a-zA-Z0-9_\-]', '-').ToLower()
+                    if ([string]::IsNullOrEmpty($cleanName)) { $cleanName = "img" }
+                    $cleanName = $cleanName + "-" + [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() + $ext
+                }
+                
+                $imagesDir = Join-Path $root "assets\images"
+                if (-not (Test-Path $imagesDir)) { New-Item -ItemType Directory -Path $imagesDir -Force | Out-Null }
+                $savePath = Join-Path $imagesDir $cleanName
+                
+                # Strip data URL prefix
+                $pureBase64 = $rawBase64 -replace '^data:image\/[a-zA-Z]+;base64,', ''
+                $imgBytes = [System.Convert]::FromBase64String($pureBase64)
+                [System.IO.File]::WriteAllBytes($savePath, $imgBytes)
+                
+                $relUrl = "assets/images/" + $cleanName
+                $fullUrl = "https://9sathapornoffice-droid.github.io/Daisy-Day/" + $relUrl
+                
+                $resJson = @{
+                    success = $true
+                    url = $relUrl
+                    fullUrl = $fullUrl
+                    filename = $cleanName
+                    size = $imgBytes.Length
+                } | ConvertTo-Json
+                
                 $bytes = (New-Object System.Text.UTF8Encoding($false)).GetBytes($resJson)
                 $response.ContentType = "application/json; charset=utf-8"
                 $response.StatusCode = 200
