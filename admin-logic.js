@@ -262,6 +262,18 @@ function getProductPublicImageUrl(product) {
   return '';
 }
 
+// Fallback for images before GitHub Pages redeploys (Loads instantly from raw.githubusercontent.com in 0s)
+function handleImageFallback(img) {
+  if (!img) return;
+  const currentSrc = img.src || '';
+  if (currentSrc.includes('assets/images/') && !currentSrc.includes('raw.githubusercontent.com')) {
+    const filename = currentSrc.split('/').pop().split('?')[0];
+    img.src = `https://raw.githubusercontent.com/9sathapornoffice-droid/Daisy-Day/main/assets/images/${filename}`;
+  } else if (typeof IMAGES !== 'undefined' && IMAGES.purple_lily) {
+    img.src = IMAGES.purple_lily;
+  }
+}
+
 // Ensure logo and banner are populated from IMAGES if missing or empty
 if (!shopConfig.banner || shopConfig.banner.trim() === '') {
   shopConfig.banner = (typeof IMAGES !== 'undefined' && IMAGES.banner) ? IMAGES.banner : '';
@@ -493,7 +505,7 @@ function renderBookPagesHTML() {
         </div>
         <div class="product-page-body">
           <div class="product-img-frame" onclick="openLightbox('${p.image}')" title="แตะเพื่อดูรูปขยาย">
-            <img src="${p.image}" alt="${p.name}" loading="lazy">
+            <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="handleImageFallback(this)">
             <span class="product-tag-float">${p.tag || '🌸 แนะนำ'}</span>
             <span class="product-sku-pill">รหัส: ${p.sku}</span>
           </div>
@@ -649,7 +661,7 @@ function renderGridProducts() {
     card.className = 'grid-product-card';
     card.innerHTML = `
       <div class="grid-img-wrap" onclick="openLightbox('${prod.image}')">
-        <img src="${prod.image}" alt="${prod.name}" class="grid-img" loading="lazy">
+        <img src="${prod.image}" alt="${prod.name}" class="grid-img" loading="lazy" onerror="handleImageFallback(this)">
         <span class="grid-tag">${prod.tag || '🌸'}</span>
       </div>
       <div class="grid-body">
@@ -980,7 +992,7 @@ function renderAdminProducts() {
     const card = document.createElement('div');
     card.className = 'admin-item-card';
     card.innerHTML = `
-      <img src="${prod.image}" alt="${prod.name}" class="admin-item-thumb" onclick="openLightbox('${prod.image}')">
+      <img src="${prod.image}" alt="${prod.name}" class="admin-item-thumb" onclick="openLightbox('${prod.image}')" onerror="handleImageFallback(this)">
       <div class="admin-item-info">
         <div class="admin-item-title">${prod.name} ${prod.nameTh ? `(${prod.nameTh})` : ''}</div>
         <div class="admin-item-meta">
@@ -1163,44 +1175,60 @@ async function loadCentralData() {
     let data = null;
     let sourcePath = './data/catalog.json';
 
-    // 1. Fetch ./data/catalog.json
-    try {
-      const res = await fetch(`./data/catalog.json?v=${Date.now()}`, { cache: 'no-store' });
-      if (res.ok) {
-        data = await res.json();
-      }
-    } catch (e) {}
+    // 1. If on GitHub Pages, try raw.githubusercontent.com first for instant real-time live data
+    // (Bypasses the 30-90s delay of GitHub Pages static redeployment!)
+    const isGitHubPages = window.location.hostname.includes('github.io');
+    if (isGitHubPages) {
+      try {
+        const rawRes = await fetch(`https://raw.githubusercontent.com/9sathapornoffice-droid/Daisy-Day/main/data/catalog.json?v=${Date.now()}`, { cache: 'no-store' });
+        if (rawRes.ok) {
+          const rawData = await rawRes.json();
+          if (rawData && Array.isArray(rawData.products)) {
+            data = rawData;
+            sourcePath = 'GitHub Raw (Real-time)';
+          }
+        }
+      } catch (e) {}
+    }
 
-    // 2. Also check root ./catalog.json (in case admin uploaded to GitHub repo root)
-    try {
-      const rootRes = await fetch(`./catalog.json?v=${Date.now()}`, { cache: 'no-store' });
-      if (rootRes.ok) {
-        const rootData = await rootRes.json();
-        if (rootData && Array.isArray(rootData.products)) {
-          // If root catalog is newer, use it
-          if (!data || !data.updatedAt || (rootData.updatedAt && new Date(rootData.updatedAt).getTime() > new Date(data.updatedAt).getTime())) {
+    // 2. Fetch ./data/catalog.json
+    if (!data) {
+      try {
+        const res = await fetch(`./data/catalog.json?v=${Date.now()}`, { cache: 'no-store' });
+        if (res.ok) {
+          data = await res.json();
+        }
+      } catch (e) {}
+    }
+
+    // 3. Also check root ./catalog.json (in case admin uploaded to GitHub repo root)
+    if (!data) {
+      try {
+        const rootRes = await fetch(`./catalog.json?v=${Date.now()}`, { cache: 'no-store' });
+        if (rootRes.ok) {
+          const rootData = await rootRes.json();
+          if (rootData && Array.isArray(rootData.products)) {
             data = rootData;
             sourcePath = './catalog.json';
           }
         }
-      }
-    } catch (e) {}
+      } catch (e) {}
+    }
 
     if (data && Array.isArray(data.products)) {
       const localUpdated = localStorage.getItem('daisy_updated_at');
-      const hasPendingChanges = localStorage.getItem('daisy_has_pending_changes') === 'true';
 
-      // Only preserve local storage if this device is an admin with unsynced local edits that are newer
+      // Preserve local storage if this device has a newer timestamp than the incoming server data
+      // (Even if changes were synced, GitHub Pages takes 1-2 mins to redeploy static cache)
       let isLocalNewer = false;
-      if (hasPendingChanges && localUpdated && data.updatedAt) {
+      if (localUpdated && data.updatedAt) {
         if (new Date(localUpdated).getTime() > new Date(data.updatedAt).getTime()) {
           isLocalNewer = true;
         }
       }
 
       if (isLocalNewer) {
-        console.log('🛡️ Preserving local changes because this device has newer unsynced admin edits');
-        updateSyncStatusBadge(true);
+        console.log('🛡️ Preserving local changes because this device timestamp is newer than server cache');
         return false;
       }
 
