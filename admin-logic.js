@@ -1405,8 +1405,9 @@ async function syncToGitHubWithToken(token, payload) {
     const jsonStr = JSON.stringify(payload, null, 2);
     const utf8Bytes = new TextEncoder().encode(jsonStr);
     let binaryStr = '';
-    for (let i = 0; i < utf8Bytes.length; i++) {
-      binaryStr += String.fromCharCode(utf8Bytes[i]);
+    const chunkSize = 8192;
+    for (let i = 0; i < utf8Bytes.length; i += chunkSize) {
+      binaryStr += String.fromCharCode.apply(null, utf8Bytes.subarray(i, i + chunkSize));
     }
     const base64Content = btoa(binaryStr);
 
@@ -1434,12 +1435,8 @@ async function syncToGitHubWithToken(token, payload) {
   }
 
   const timeStr = new Date().toLocaleString('th-TH');
-  await commitFileToGitHub('data/catalog.json', `Daisy Day Admin: Update catalog data [${timeStr}]`);
-  try {
-    await commitFileToGitHub('catalog.json', `Daisy Day Admin: Sync root catalog [${timeStr}]`);
-  } catch (e) {
-    // Non-fatal if root catalog fails
-  }
+  // Commit directly to primary catalog file (Single fast commit, no duplicate queue wait)
+  await commitFileToGitHub('data/catalog.json', `Daisy Day Admin: Update catalog [${timeStr}]`);
 
   return { success: true };
 }
@@ -1530,15 +1527,15 @@ function saveProductData() {
     products.push(newProduct);
   }
 
-  // Save centrally (LocalStorage + Local Server + GitHub)
-  const actionMsg = idVal ? 'แก้ไขข้อมูลสินค้าเรียบร้อยแล้ว 🌸' : 'เพิ่มสินค้าใหม่เรียบร้อยแล้ว ✨';
-  persistDataCentrally(actionMsg);
-
-  // Refresh views
+  // Refresh views immediately (instant UI response, no waiting)
   closeProductEditorModal();
   renderAdminProducts();
   buildFlipbookPages();
   renderGridProducts();
+
+  // Save centrally in background (LocalStorage + Local Server + GitHub)
+  const actionMsg = idVal ? 'แก้ไขข้อมูลสินค้าเรียบร้อยแล้ว 🌸' : 'เพิ่มสินค้าใหม่เรียบร้อยแล้ว ✨';
+  persistDataCentrally(actionMsg);
 }
 
 // Delete Product
