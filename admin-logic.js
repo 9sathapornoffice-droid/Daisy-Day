@@ -177,6 +177,22 @@ const DEFAULT_PRODUCTS = [
                    ],
         "nameTh":  "ช่อดอกทานตะวันแสนสดใส",
         "meaning":  "ความสุข ความสดชื่น ความหวัง และพลังบวกในทุกวัน"
+    },
+    {
+        "id":  10,
+        "name":  "tt",
+        "nameTh":  "tt",
+        "sku":  "SB-010",
+        "price":  79,
+        "category":  "single",
+        "tag":  "สินค้าใหม่ ✨",
+        "description":  "",
+        "meaning":  "มอบความสุขและความสดใส",
+        "badges":  [
+                       "แฮนด์เมด",
+                       "พร้อมส่ง"
+                   ],
+        "image":  "assets/images/untitled-design--1--1794228985715.jpg"
     }
 ];
 
