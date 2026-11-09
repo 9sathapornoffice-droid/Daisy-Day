@@ -234,12 +234,31 @@ const PRODUCT_IMAGE_MAP = {
 
 function getProductPublicImageUrl(product) {
   if (!product) return '';
+  const img = product.image ? product.image.trim() : '';
+  if (!img) return '';
+
+  // 1. Direct absolute URL
+  if (img.startsWith('http://') || img.startsWith('https://')) {
+    return img;
+  }
+
+  // 2. Relative asset path (e.g. assets/images/xxx.jpg or ./assets/images/xxx.jpg)
+  if (img.startsWith('assets/') || img.startsWith('./assets/')) {
+    const cleanPath = img.replace(/^\.?\//, '');
+    return 'https://9sathapornoffice-droid.github.io/Daisy-Day/' + cleanPath;
+  }
+
+  // 3. Fallback map
   if (product.id && PRODUCT_IMAGE_MAP[product.id]) {
     return GITHUB_ASSETS_BASE + PRODUCT_IMAGE_MAP[product.id];
   }
-  if (product.image && (product.image.startsWith('http://') || product.image.startsWith('https://'))) {
-    return product.image;
+
+  // 4. Filename only (e.g. purple-lily.jpg)
+  if (img.endsWith('.jpg') || img.endsWith('.png') || img.endsWith('.webp')) {
+    const fileName = img.split('/').pop();
+    return GITHUB_ASSETS_BASE + fileName;
   }
+
   return '';
 }
 
@@ -690,7 +709,7 @@ function closeOrderModal() {
 function generateLineMessage(product) {
   const catName = getCategoryName(product.category);
   const imgUrl = getProductPublicImageUrl(product);
-  const imgLine = imgUrl ? `\n🖼️ รูปสินค้า: ${imgUrl}` : '';
+  const imgLine = imgUrl ? `\n🖼️ ลิงก์รูปสินค้า: ${imgUrl}` : '';
 
   return `สวัสดีค่ะ สนใจสั่งซื้อสินค้าตัวนี้ค่ะ 🌸
 ------------------------
@@ -698,6 +717,7 @@ function generateLineMessage(product) {
 🏷️ รหัสสินค้า: ${product.sku}
 💰 ราคา: ${product.price} บาท
 📂 หมวดหมู่: ${catName}${imgLine}
+🌐 แคตตาล็อก: https://9sathapornoffice-droid.github.io/Daisy-Day/
 ------------------------
 ต้องการสอบถามข้อมูลเพิ่มเติม / พร้อมสั่งซื้อค่ะ ✨`;
 }
