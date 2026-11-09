@@ -214,7 +214,7 @@
         <button class="admin-tab-btn active" data-tab="tab-products">🛍️ จัดการสินค้า (<span id="adminProdCount">6</span>)</button>
         <button class="admin-tab-btn" data-tab="tab-categories">📂 หมวดหมู่</button>
         <button class="admin-tab-btn" data-tab="tab-shop">⚙️ ข้อมูลร้าน & LINE</button>
-        <button class="admin-tab-btn" data-tab="tab-export">🚀 อัปเดต GitHub</button>
+        <button class="admin-tab-btn" data-tab="tab-export">💾 ฐานข้อมูล & สำรอง</button>
       </nav>
 
       <!-- Admin Tab Body Panels -->
@@ -224,17 +224,14 @@
         <div class="admin-panel active" id="tab-products">
           
           <!-- Real-time Live Sync Status Banner -->
-          <div id="adminSyncNotificationBar" style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 14px; padding: 12px 16px; margin-bottom: 14px; display: none; align-items: center; justify-content: space-between; gap: 10px;">
+          <div id="adminSyncNotificationBar" style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 14px; padding: 10px 16px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
             <div style="display: flex; align-items: center; gap: 10px;">
-              <span id="syncStatusIcon" style="font-size: 20px;">⚠️</span>
+              <span id="syncStatusIcon" style="font-size: 18px;">⚡</span>
               <div>
-                <div id="syncStatusTitle" style="font-weight: 700; color: #92400e; font-size: 13.5px;">มีการเปลี่ยนแปลงสินค้าที่ยังไม่ได้ส่งขึ้นเว็บจริง</div>
-                <div id="syncStatusSubtitle" style="font-size: 11.5px; color: #b45309;">ข้อมูลบันทึกในเครื่องนี้แล้ว แต่ลูกค้าบนเว็บจริงจะยังไม่เห็นจนกว่าจะกดส่ง</div>
+                <div id="syncStatusTitle" style="font-weight: 700; color: #166534; font-size: 13px;">ระบบ Real-time: เชื่อมต่อฐานข้อมูล Supabase เรียบร้อยแล้ว</div>
+                <div id="syncStatusSubtitle" style="font-size: 11.5px; color: #15803d;">ข้อมูลและรูปภาพที่แก้ไขจะอัปเดตบนเว็บทันที 0 วินาที</div>
               </div>
             </div>
-            <button id="btnQuickSyncLive" onclick="triggerQuickSyncLive()" class="admin-btn-primary" style="background: linear-gradient(135deg, #f59e0b, #d97706); padding: 8px 16px; font-size: 12.5px; white-space: nowrap; flex-shrink: 0; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);">
-              <span>🚀 ส่งขึ้นเว็บจริงให้ลูกค้าเห็น</span>
-            </button>
           </div>
 
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
@@ -332,76 +329,41 @@
           </div>
         </div>
 
-        <!-- 4. TAB: CENTRAL SYNC & GITHUB -->
+        <!-- 4. TAB: BACKUP & DATABASE STATUS -->
         <div class="admin-panel" id="tab-export">
           <div style="background: #fff; padding: 20px; border-radius: 18px; border: 1px solid #ebdcf5;">
             
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-              <span style="font-size: 26px;">🌐</span>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+              <span style="font-size: 26px;">⚡</span>
               <div>
-                <h3 style="font-size: 16px; font-weight: 700; color: #4a2868; margin: 0;">ระบบบันทึกข้อมูลส่วนกลาง (Central Sync)</h3>
-                <p style="font-size: 12.5px; color: #7b6a8e; margin: 2px 0 0;">ทำให้ทุกเครื่องและลูกค้าทุกคนเห็นข้อมูลอัปเดตตรงกันทันที</p>
+                <h3 style="font-size: 16px; font-weight: 700; color: #4a2868; margin: 0;">ฐานข้อมูลและสำรองข้อมูล (Database & Backup)</h3>
+                <p style="font-size: 12.5px; color: #7b6a8e; margin: 2px 0 0;">จัดการข้อมูลผ่านระบบคลาวด์ Supabase แบบเรียลไทม์ 0 วินาที</p>
               </div>
             </div>
 
-            <!-- Status Banner -->
-            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 12px 14px; margin-bottom: 18px; font-size: 12.5px; color: #166534; display: flex; align-items: center; gap: 8px;">
-              <span>🟢</span>
-              <span><b>สถานะระบบ:</b> เมื่อรันบน localhost ระบบจะ Auto-Save บันทึกลง <code>data/catalog.json</code> และ <code>app.js</code> บนเครื่องอัตโนมัติทุกครั้งที่แก้ไข</span>
-            </div>
-
-            <!-- Option 1: 1-Click GitHub Sync via Token -->
-            <div style="background: #faf5fc; border: 1px solid #ebdcf5; border-radius: 14px; padding: 16px; margin-bottom: 18px;">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                <span style="font-weight: 700; color: #6b21a8; font-size: 14px;">⚡ วิธีที่ 1: ซิงค์ขึ้น GitHub ทันทีในคลิกเดียว (แนะนำที่สุด)</span>
-                <span style="font-size: 11px; background: #ebdcf5; color: #6b21a8; padding: 2px 8px; border-radius: 8px; font-weight: 600;">ไม่ต้องดาวน์โหลดไฟล์</span>
+            <!-- Database Info Box -->
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 14px; padding: 16px; margin-bottom: 18px;">
+              <div style="font-weight: 700; color: #166534; font-size: 13.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                <span>🟢</span> ฐานข้อมูล Supabase เชื่อมต่อพร้อมใช้งาน
               </div>
-              <p style="font-size: 12px; color: #6b5577; margin-bottom: 10px; line-height: 1.4;">
-                ใส่ GitHub Personal Access Token (PAT) เพียงครั้งเดียว เมื่อกดปุ่มด้านล่าง ระบบจะส่งไฟล์ <code>data/catalog.json</code> ขึ้นคลัง <b>9sathapornoffice-droid/Daisy-Day</b> ทันที (หลังบันทึกกรุณารอประมาณ 30 วินาทีเพื่อให้ข้อมูลอัปเดตบนเว็บจริง)
-              </p>
-              
-              <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                <input type="password" id="githubTokenInput" class="admin-input" placeholder="วาง GitHub Token ที่นี่ (เช่น ghp_xxxx หรือ github_pat_xxxx)..." style="font-size: 12.5px;">
-                <button class="admin-btn-primary" onclick="saveGithubTokenAndSync()" style="white-space: nowrap; flex-shrink: 0; background: linear-gradient(135deg, #16a34a, #15803d);">
-                  <span>🚀 บันทึกขึ้น GitHub ทันที</span>
-                </button>
-              </div>
-              <div style="font-size: 11px; color: #8e7a9e; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px;">
-                <span>🔒 Token จะถูกเก็บไว้เฉพาะในเบราว์เซอร์ของแอดมินเท่านั้น</span>
-                <a href="https://github.com/settings/tokens/new?description=DaisyDay_Admin&scopes=repo" target="_blank" style="color: #7b4eb2; text-decoration: underline; font-weight: 600;">คลิกที่นี่เพื่อสร้าง GitHub Token ↗</a>
+              <div style="font-size: 12px; color: #14532d; line-height: 1.6;">
+                <div>• <b>Project:</b> <code>qmkyevyqnjbjyyhqrpka.supabase.co</code></div>
+                <div>• <b>Storage:</b> <code>product-images (Public CDN)</code></div>
+                <div>• <b>สถานะ:</b> บันทึกข้อมูลและรูปภาพแบบ Real-time ทุกการเปลี่ยนแปลงแสดงผลทันทีโดยไม่ต้องใช้ Token หรือรอ GitHub Actions</div>
               </div>
             </div>
 
-            <!-- Option 2: Manual Download & Upload -->
-            <div style="background: #fff; border: 1px solid #ebdcf5; border-radius: 14px; padding: 16px;">
-              <span style="font-weight: 700; color: #4a2868; font-size: 14px; display: block; margin-bottom: 6px;">📦 วิธีที่ 2: ดาวน์โหลดไฟล์ไปอัปโหลดบน GitHub ด้วยตนเอง</span>
+            <!-- Export / Backup Box -->
+            <div style="background: #faf5fc; border: 1px solid #ebdcf5; border-radius: 14px; padding: 16px;">
+              <span style="font-weight: 700; color: #4a2868; font-size: 14px; display: block; margin-bottom: 6px;">📦 ดาวน์โหลดสำรองข้อมูล (Backup)</span>
               <p style="font-size: 12px; color: #6b5577; margin-bottom: 12px; line-height: 1.4;">
-                หากไม่ต้องการใช้ Token สามารถดาวน์โหลดไฟล์ข้อมูลที่มีการแก้ไขล่าสุด แล้วนำไปวางทับใน GitHub ได้เช่นกันครับ
+                คุณสามารถดาวน์โหลดไฟล์ข้อมูลแคตตาล็อกสินค้าทั้งหมดเก็บไว้ในเครื่องเพื่อเป็นไฟล์สำรองได้ทุกเมื่อ
               </p>
 
-              <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px;">
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <button class="admin-btn-primary" onclick="exportCatalogJson()" style="background: #7b4eb2;">
-                  <span>📥 1. ดาวน์โหลด catalog.json</span>
+                  <span>📥 ดาวน์โหลด catalog.json (สำรองข้อมูล)</span>
                 </button>
-                <button class="admin-btn-primary" onclick="exportUpdatedAppJs()" style="background: #a21caf;">
-                  <span>📥 2. ดาวน์โหลด app.js (อัปเดตใหม่)</span>
-                </button>
-              </div>
-
-              <div class="github-export-box">
-                <div style="font-weight: 700; color: #166534; font-size: 13px; margin-bottom: 6px;">ขั้นตอนการนำไฟล์ไปวางใน GitHub:</div>
-                <div class="github-step-item">
-                  <span class="github-step-num">1</span>
-                  <span>กดดาวน์โหลดไฟล์ <b>catalog.json</b> หรือ <b>app.js</b> ด้านบน</span>
-                </div>
-                <div class="github-step-item">
-                  <span class="github-step-num">2</span>
-                  <span>เปิดหน้าอัปโหลด <a href="https://github.com/9sathapornoffice-droid/Daisy-Day/upload/main" target="_blank" style="color: #058f3d; font-weight: 600; text-decoration: underline;">GitHub Daisy-Day Upload ↗</a></span>
-                </div>
-                <div class="github-step-item">
-                  <span class="github-step-num">3</span>
-                  <span>ลากไฟล์ที่เพิ่งดาวน์โหลดไปวาง แล้วกดปุ่มสีเขียว <b>Commit changes</b> เสร็จสิ้น!</span>
-                </div>
               </div>
             </div>
 
@@ -514,6 +476,8 @@
     <span id="toastMessage">แจ้งเตือน</span>
   </div>
 
+  <!-- SUPABASE JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./app.js"></script>
 </body>
 </html>

@@ -9,58 +9,70 @@ const DEFAULT_SHOP_CONFIG = {
     "banner":  "assets/images/daisy-day-banner.jpg",
     "name":  "Daisy Day",
     "logo":  "assets/images/daisy-day-logo.jpg",
-    "tagline":  "Handmade Flowers • Bloom Happiness ♡"
+    "tagline":  "Handmade Flowers • Bloom Happiness ♡",
+    "id":  1,
+    "updated_at":  "2026-11-09T14:17:40.835+00:00"
 };
 
 // Default Categories
 const DEFAULT_CATEGORIES = [
     {
-        "icon":  "🌷",
+        "id":  "single",
         "name":  "ดอกเดี่ยว",
-        "id":  "single"
+        "icon":  "🌷",
+        "display_order":  0,
+        "created_at":  "2026-11-09T14:15:49.362447+00:00"
     },
     {
-        "icon":  "💐",
+        "id":  "bouquet",
         "name":  "รวมช่อ",
-        "id":  "bouquet"
+        "icon":  "💐",
+        "display_order":  1,
+        "created_at":  "2026-11-09T14:15:49.362447+00:00"
     }
 ];
 
 // Default 6 Products
 const DEFAULT_PRODUCTS = [
     {
-        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/purple-lily.jpg",
-        "sku":  "SB-001",
         "id":  1,
+        "name":  "Purple Lily",
+        "nameTh":  "ดอกลิลลี่กำมะหยี่ สีม่วงพาสเทล",
+        "sku":  "SB-001",
         "price":  79,
         "category":  "single",
-        "description":  "ลิลลี่ลวดกำมะหยี่สีม่วงสุดละมุน ประดับเกสรสีขาวและโบว์ผ้าแก้วสีม่วงระยิบระยับ พร้อมแผ่นการ์ด Good Luck เหมาะสำหรับมอบเป็นของขวัญวันสำคัญ",
-        "name":  "Purple Lily",
         "tag":  "ขายดี 💜",
         "badges":  [
                        "งานฝีมือ 100%",
                        "เก็บได้นานไม่เหี่ยว",
                        "พร้อมการ์ดของขวัญ"
                    ],
-        "nameTh":  "ดอกลิลลี่กำมะหยี่ สีม่วงพาสเทล",
-        "meaning":  "ความสง่างาม ความสำเร็จ และความจริงใจ"
+        "meaning":  "ความสง่างาม ความสำเร็จ และความจริงใจ",
+        "description":  "ลิลลี่ลวดกำมะหยี่สีม่วงสุดละมุน ประดับเกสรสีขาวและโบว์ผ้าแก้วสีม่วงระยิบระยับ พร้อมแผ่นการ์ด Good Luck เหมาะสำหรับมอบเป็นของขวัญวันสำคัญ",
+        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/purple-lily.jpg",
+        "display_order":  0,
+        "created_at":  "2026-11-09T14:15:49.362447+00:00",
+        "updated_at":  "2026-11-09T14:17:40.835+00:00"
     },
     {
-        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/pink-lily-1.jpg",
-        "sku":  "SB-002",
         "id":  2,
+        "name":  "Pink Lily",
+        "nameTh":  "ดอกลิลลี่กำมะหยี่ สีชมพูมาเจนต้า",
+        "sku":  "SB-002",
         "price":  79,
         "category":  "single",
-        "description":  "ดอกลิลลี่กำมะหยี่สีชมพูเฉดหวานสดใส ผูกโบว์ริบบิ้นน้ำตาลพรีเมียมสกรีน Just for you สไตล์เรียบหรู น่ารัก มีเสน่ห์ในทุกมุมมอง",
-        "name":  "Pink Lily",
         "tag":  "ยอดนิยม 🌸",
         "badges":  [
                        "งานแฮนด์เมด",
                        "โบว์ผ้าซาติน",
                        "การ์ด Good Luck"
                    ],
-        "nameTh":  "ดอกลิลลี่กำมะหยี่ สีชมพูมาเจนต้า",
-        "meaning":  "ความรักที่สดใส ความอบอุ่น และความปรารถนาดี"
+        "meaning":  "ความรักที่สดใส ความอบอุ่น และความปรารถนาดี",
+        "description":  "ดอกลิลลี่กำมะหยี่สีชมพูเฉดหวานสดใส ผูกโบว์ริบบิ้นน้ำตาลพรีเมียมสกรีน Just for you สไตล์เรียบหรู น่ารัก มีเสน่ห์ในทุกมุมมอง",
+        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/pink-lily-1.jpg",
+        "display_order":  1,
+        "created_at":  "2026-11-09T14:15:49.362447+00:00",
+        "updated_at":  "2026-11-09T14:17:40.835+00:00"
     },
     {
         "id":  8,
@@ -70,47 +82,56 @@ const DEFAULT_PRODUCTS = [
         "price":  89,
         "category":  "single",
         "tag":  "สินค้าใหม่ ✨",
-        "description":  "ดอกลิลลี่กำมะหยี่เกรดพรีเมียมสีบานเย็นสดใสสะดุดตา ประดับคริสตัลและเพชรระยิบระยับเล่นแสงสวยงาม ผูกโบว์ผ้าแก้วสีชมพูหวานละมุน พร้อมการ์ด Good Luck",
-        "meaning":  "มอบความสุขและความสดใส",
         "badges":  [
                        "แฮนด์เมด",
                        "พร้อมส่ง"
                    ],
-        "image":  "assets/images/magenta-crystal-lily.jpg"
+        "meaning":  "มอบความสุขและความสดใส",
+        "description":  "ดอกลิลลี่กำมะหยี่เกรดพรีเมียมสีบานเย็นสดใสสะดุดตา ประดับคริสตัลและเพชรระยิบระยับเล่นแสงสวยงาม ผูกโบว์ผ้าแก้วสีชมพูหวานละมุน พร้อมการ์ด Good Luck",
+        "image":  "assets/images/magenta-crystal-lily.jpg",
+        "display_order":  2,
+        "created_at":  "2026-11-09T14:15:49.362447+00:00",
+        "updated_at":  "2026-11-09T14:17:40.835+00:00"
     },
     {
-        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/pink-lily-2.jpg",
-        "sku":  "SB-003",
         "id":  3,
+        "name":  "Pink Lily (Sparkle Pearl)",
+        "nameTh":  "ดอกลิลลี่กำมะหยี่ สีชมพูขอบขาว แต่งคริสตัล",
+        "sku":  "SB-003",
         "price":  89,
         "category":  "single",
-        "description":  "ลิลลี่กำมะหยี่สีชมพูหวานแต่งขอบปุยขาว ตกแต่งด้วยคริสตัลดอกไม้ประกายแวววาว ผูกโบว์ Just for you เพิ่มความวิบวับสะดุดตา",
-        "name":  "Pink Lily (Sparkle Pearl)",
         "tag":  "ดีเทลพิเศษ ✨",
         "badges":  [
                        "คริสตัลวิบวับ",
                        "งานประณีต",
                        "แพ็กเกจน่ารัก"
                    ],
-        "nameTh":  "ดอกลิลลี่กำมะหยี่ สีชมพูขอบขาว แต่งคริสตัล",
-        "meaning":  "ความงดงามเปล่งประกาย และความอ่อนหวาน"
+        "meaning":  "ความงดงามเปล่งประกาย และความอ่อนหวาน",
+        "description":  "ลิลลี่กำมะหยี่สีชมพูหวานแต่งขอบปุยขาว ตกแต่งด้วยคริสตัลดอกไม้ประกายแวววาว ผูกโบว์ Just for you เพิ่มความวิบวับสะดุดตา",
+        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/pink-lily-2.jpg",
+        "display_order":  3,
+        "created_at":  "2026-11-09T14:15:49.362447+00:00",
+        "updated_at":  "2026-11-09T14:17:40.835+00:00"
     },
     {
-        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/heart-crystal-lily.jpg",
-        "sku":  "SB-004",
         "id":  4,
+        "name":  "Heart Crystal Lily",
+        "nameTh":  "ดอกลิลลี่กำมะหยี่ คริสตัลหัวใจ",
+        "sku":  "SB-004",
         "price":  89,
         "category":  "single",
-        "description":  "ดอกลิลลี่กำมะหยี่เกรดพรีเมียม ประดับคริสตัลรูปหัวใจสีชมพูและเพชรระยิบระยับ ผูกโบว์ผ้าแก้วสีชมพูหวานละมุน พร้อมการ์ด Good Luck",
-        "name":  "Heart Crystal Lily",
         "tag":  "รุ่นพรีเมียม 💖",
         "badges":  [
                        "คริสตัลหัวใจ",
                        "โบว์ผ้าแก้วนำเข้า",
                        "ของขวัญวาเลนไทน์"
                    ],
-        "nameTh":  "ดอกลิลลี่กำมะหยี่ คริสตัลหัวใจ",
-        "meaning":  "แทนใจด้วยความรักที่บริสุทธิ์และมั่นคง"
+        "meaning":  "แทนใจด้วยความรักที่บริสุทธิ์และมั่นคง",
+        "description":  "ดอกลิลลี่กำมะหยี่เกรดพรีเมียม ประดับคริสตัลรูปหัวใจสีชมพูและเพชรระยิบระยับ ผูกโบว์ผ้าแก้วสีชมพูหวานละมุน พร้อมการ์ด Good Luck",
+        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/heart-crystal-lily.jpg",
+        "display_order":  4,
+        "created_at":  "2026-11-09T14:15:49.362447+00:00",
+        "updated_at":  "2026-11-09T14:17:40.835+00:00"
     },
     {
         "id":  9,
@@ -120,30 +141,36 @@ const DEFAULT_PRODUCTS = [
         "price":  109,
         "category":  "single",
         "tag":  "ขายดี 🌻",
-        "description":  "ดอกทานตะวันกำมะหยี่เกรดพรีเมียมสีเหลืองสดใส เกสรสีน้ำตาลเข้มละมุน ประดับคริสตัลและเพชรระยิบระยับเล่นแสงสวยงาม ผูกโบว์ผ้าสีน้ำตาลเข้มตัดกับตัวดอกได้อย่างลงตัว หรูหรา พร้อมการ์ด Good Luck",
-        "meaning":  "มอบความสุขและความสดใส",
         "badges":  [
                        "แฮนด์เมด",
                        "พร้อมส่ง"
                    ],
-        "image":  "assets/images/sunny-crystal-sunflower.jpg"
+        "meaning":  "มอบความสุขและความสดใส",
+        "description":  "ดอกทานตะวันกำมะหยี่เกรดพรีเมียมสีเหลืองสดใส เกสรสีน้ำตาลเข้มละมุน ประดับคริสตัลและเพชรระยิบระยับเล่นแสงสวยงาม ผูกโบว์ผ้าสีน้ำตาลเข้มตัดกับตัวดอกได้อย่างลงตัว หรูหรา พร้อมการ์ด Good Luck",
+        "image":  "assets/images/sunny-crystal-sunflower.jpg",
+        "display_order":  5,
+        "created_at":  "2026-11-09T14:15:49.362447+00:00",
+        "updated_at":  "2026-11-09T14:17:40.835+00:00"
     },
     {
-        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/pink-lily-tulip-bouquet.jpg",
-        "sku":  "LB-001",
         "id":  5,
+        "name":  "Pink Lily \u0026 Tulip Bouquet",
+        "nameTh":  "ช่อลิลลี่ \u0026 ทิวลิปชมพูแสนหวาน",
+        "sku":  "LB-001",
         "price":  189,
         "category":  "bouquet",
-        "description":  "ช่อดอกไม้จัดรวมดอกลิลลี่ชมพู ดอกทิวลิปกำมะหยี่ และดอกเดซี่มินิน่ารัก ห่อด้วยกระดาษเกาหลีสีขาวและผ้าตาข่าย ผูกโบว์ Just for you สุดประณีต",
-        "name":  "Pink Lily \u0026 Tulip Bouquet",
         "tag":  "ช่อของขวัญสุดฮิต 💐",
         "badges":  [
                        "ช่อจัดเต็ม",
                        "ของขวัญรับปริญญา",
                        "วันเกิด \u0026 ครบรอบ"
                    ],
-        "nameTh":  "ช่อลิลลี่ \u0026 ทิวลิปชมพูแสนหวาน",
-        "meaning":  "การเริ่มต้นใหม่ ความสดใส และความประทับใจไม่รู้ลืม"
+        "meaning":  "การเริ่มต้นใหม่ ความสดใส และความประทับใจไม่รู้ลืม",
+        "description":  "ช่อดอกไม้จัดรวมดอกลิลลี่ชมพู ดอกทิวลิปกำมะหยี่ และดอกเดซี่มินิน่ารัก ห่อด้วยกระดาษเกาหลีสีขาวและผ้าตาข่าย ผูกโบว์ Just for you สุดประณีต",
+        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/pink-lily-tulip-bouquet.jpg",
+        "display_order":  6,
+        "created_at":  "2026-11-09T14:15:49.362447+00:00",
+        "updated_at":  "2026-11-09T14:17:40.835+00:00"
     },
     {
         "id":  7,
@@ -153,46 +180,36 @@ const DEFAULT_PRODUCTS = [
         "price":  189,
         "category":  "bouquet",
         "tag":  "สินค้าใหม่ ✨",
-        "description":  "",
-        "meaning":  "มอบความสุขและความสดใส",
         "badges":  [
                        "แฮนด์เมด",
                        "พร้อมส่ง"
                    ],
-        "image":  "assets/images/purple-lily-tulip.jpg"
+        "meaning":  "มอบความสุขและความสดใส",
+        "description":  "",
+        "image":  "assets/images/purple-lily-tulip.jpg",
+        "display_order":  7,
+        "created_at":  "2026-11-09T14:15:49.362447+00:00",
+        "updated_at":  "2026-11-09T14:17:40.835+00:00"
     },
     {
-        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/sunflower-bouquet.jpg",
-        "sku":  "SF-001",
         "id":  6,
+        "name":  "Sunflower Bouquet",
+        "nameTh":  "ช่อดอกทานตะวันแสนสดใส",
+        "sku":  "SF-001",
         "price":  189,
         "category":  "bouquet",
-        "description":  "ช่อดอกทานตะวันลวดกำมะหยี่สีเหลืองสดใส ผสานดอกเดซี่มินิและกิ่งใบเขียว ห่อกระดาษเกาหลีสีขาวและผ้าตาข่ายฟู ผูกโบว์ริบบิ้น Just for you สื่อถึงพลังบวกและความสดชื่น",
-        "name":  "Sunflower Bouquet",
         "tag":  "พลังบวก \u0026 ยอดฮิต 🌻",
         "badges":  [
                        "ช่อซิกเนเจอร์",
                        "สไตล์เกาหลี",
                        "มอบให้ได้ทุกโอกาส"
                    ],
-        "nameTh":  "ช่อดอกทานตะวันแสนสดใส",
-        "meaning":  "ความสุข ความสดชื่น ความหวัง และพลังบวกในทุกวัน"
-    },
-    {
-        "id":  10,
-        "name":  "tt",
-        "nameTh":  "tt",
-        "sku":  "SB-010",
-        "price":  79,
-        "category":  "single",
-        "tag":  "สินค้าใหม่ ✨",
-        "description":  "",
-        "meaning":  "มอบความสุขและความสดใส",
-        "badges":  [
-                       "แฮนด์เมด",
-                       "พร้อมส่ง"
-                   ],
-        "image":  "assets/images/untitled-design--1--1794228985715.jpg"
+        "meaning":  "ความสุข ความสดชื่น ความหวัง และพลังบวกในทุกวัน",
+        "description":  "ช่อดอกทานตะวันลวดกำมะหยี่สีเหลืองสดใส ผสานดอกเดซี่มินิและกิ่งใบเขียว ห่อกระดาษเกาหลีสีขาวและผ้าตาข่ายฟู ผูกโบว์ริบบิ้น Just for you สื่อถึงพลังบวกและความสดชื่น",
+        "image":  "https://9sathapornoffice-droid.github.io/Daisy-Day/assets/images/sunflower-bouquet.jpg",
+        "display_order":  8,
+        "created_at":  "2026-11-09T14:15:49.362447+00:00",
+        "updated_at":  "2026-11-09T14:17:40.835+00:00"
     }
 ];
 
@@ -979,26 +996,12 @@ function adminLogout() {
   showToast('ออกจากระบบแอดมินเรียบร้อยแล้ว 👋');
 }
 
-async function closeAdminModal() {
+function closeAdminModal() {
   const modal = document.getElementById('adminModal');
   if (!modal) return;
   modal.classList.remove('active', 'open');
   if (window.location.hash === '#admin') {
     history.replaceState(null, null, window.location.pathname);
-  }
-
-  // Check if there are pending changes to batch sync to GitHub
-  const hasPending = localStorage.getItem('daisy_has_pending_changes') === 'true' || 
-                     (state.pendingImagesToUpload && state.pendingImagesToUpload.length > 0);
-  const ghToken = localStorage.getItem('daisy_github_token') || DEFAULT_GITHUB_TOKEN;
-
-  if (hasPending && ghToken && ghToken.trim() !== '') {
-    showToast('⏳ ปิดหน้าต่างแอดมินแล้ว กำลังส่งข้อมูลขึ้น GitHub ทีเดียวให้ค่ะ...', 4000);
-    try {
-      await batchSyncToGitHub(ghToken.trim());
-    } catch (err) {
-      console.warn('Batch sync on modal close error:', err);
-    }
   }
 }
 
@@ -1137,17 +1140,29 @@ function closeProductEditorModal() {
 }
 
 // ============================================================================
-// CENTRAL PERSISTENCE & GITHUB 1-CLICK SYNC ENGINE
+// SUPABASE REAL-TIME DATABASE & STORAGE ENGINE
 // ============================================================================
+const SUPABASE_CONFIG = {
+  url: 'https://qmkyevyqnjbjyyhqrpka.supabase.co',
+  anonKey: 'sb_publishable_IMU9AQqNzVB_FeNIoWxsLg_HcxxceNT'
+};
 
-// Default GitHub Token for 1-Click Live Sync
-const DEFAULT_GITHUB_TOKEN = '';
+let supabaseClient = null;
+function getSupabase() {
+  if (!supabaseClient && window.supabase && SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey) {
+    try {
+      supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+    } catch (e) {
+      console.warn('Supabase init error:', e);
+    }
+  }
+  return supabaseClient;
+}
 
-// Central persistence engine (Saves to LocalStorage + Local Server Disk immediately; GitHub syncs on modal close or manual button)
-async function persistDataCentrally(customToastMessage, shouldSyncGit = false) {
+// Central persistence engine (Saves to Supabase Database in 0s + LocalStorage + Local Server Disk)
+async function persistDataCentrally(customToastMessage) {
   const nowIso = new Date().toISOString();
   localStorage.setItem('daisy_updated_at', nowIso);
-  localStorage.setItem('daisy_has_pending_changes', 'true');
 
   const payload = {
     shopConfig,
@@ -1166,8 +1181,53 @@ async function persistDataCentrally(customToastMessage, shouldSyncGit = false) {
   }
 
   let autoSavedToServer = false;
+  let autoSavedToSupabase = false;
 
-  // 2. Auto-save to local server disk (data/catalog.json and app.js)
+  // 2. Real-time Save to Supabase Database (0s Instant Live Update!)
+  const sb = getSupabase();
+  if (sb) {
+    try {
+      await Promise.all([
+        sb.from('shop_config').upsert({
+          id: 1,
+          name: shopConfig.name,
+          tagline: shopConfig.tagline,
+          lineId: shopConfig.lineId,
+          logo: shopConfig.logo,
+          banner: shopConfig.banner,
+          updated_at: nowIso
+        }),
+        sb.from('categories').upsert(categories.map((c, idx) => ({
+          id: c.id,
+          name: c.name,
+          icon: c.icon || '🌸',
+          display_order: idx
+        }))),
+        sb.from('products').upsert(products.map((p, idx) => ({
+          id: p.id,
+          name: p.name,
+          nameTh: p.nameTh || '',
+          sku: p.sku || '',
+          price: p.price || 0,
+          category: p.category || 'single',
+          tag: p.tag || '',
+          badges: p.badges || [],
+          meaning: p.meaning || '',
+          description: p.description || '',
+          image: p.image || '',
+          display_order: idx,
+          updated_at: nowIso
+        })))
+      ]);
+      autoSavedToSupabase = true;
+      localStorage.removeItem('daisy_has_pending_changes');
+      console.log('⚡ Centrally synced to Supabase database in 0 seconds!');
+    } catch (sbErr) {
+      console.warn('Supabase persist error:', sbErr);
+    }
+  }
+
+  // 3. Auto-save to local server disk (data/catalog.json and app.js)
   try {
     const res = await fetch('/api/save', {
       method: 'POST',
@@ -1182,77 +1242,17 @@ async function persistDataCentrally(customToastMessage, shouldSyncGit = false) {
     // Not running on local server or network offline
   }
 
-  // 3. Update sync banner in admin studio (informs user that changes will sync on close)
-  updateSyncStatusBadge(true);
-
-  if (shouldSyncGit) {
-    const ghToken = localStorage.getItem('daisy_github_token') || DEFAULT_GITHUB_TOKEN;
-    if (ghToken && ghToken.trim() !== '') {
-      await batchSyncToGitHub(ghToken.trim());
-      return;
-    }
-  }
+  // 4. Update sync banner in admin studio
+  updateSyncStatusBadge(!autoSavedToSupabase);
 
   if (customToastMessage) {
-    if (autoSavedToServer) {
-      showToast(`${customToastMessage} • บันทึกลงเครื่องแล้ว (จะซิงค์ขึ้น GitHub เมื่อปิดหน้าต่าง Admin) 💾`);
+    if (autoSavedToSupabase) {
+      showToast(`${customToastMessage} • ซิงค์ขึ้น Supabase Real-time เรียบร้อย ⚡`);
+    } else if (autoSavedToServer) {
+      showToast(`${customToastMessage} • บันทึกลงเครื่องแล้ว 💾`);
     } else {
-      showToast(`${customToastMessage} ✨ (จะซิงค์ขึ้น GitHub เมื่อปิดหน้าต่าง Admin)`);
+      showToast(`${customToastMessage} ✨`);
     }
-  }
-}
-
-// Batch Sync Engine: Uploads all pending images and updates catalog.json in a single GitHub commit
-let isBatchSyncing = false;
-async function batchSyncToGitHub(token) {
-  if (isBatchSyncing) {
-    console.log('⏳ Batch sync already running, skipping duplicate.');
-    return;
-  }
-  if (!token || token.trim() === '') return;
-  isBatchSyncing = true;
-
-  try {
-    // 1. Upload any pending images first
-    if (state.pendingImagesToUpload && state.pendingImagesToUpload.length > 0) {
-      const count = state.pendingImagesToUpload.length;
-      showToast(`⏳ กำลังอัปโหลดรูปภาพ (${count} รูป) ขึ้น GitHub...`, 5000);
-      const pendingList = [...state.pendingImagesToUpload];
-      for (const item of pendingList) {
-        try {
-          await uploadImageFileToGitHub(token, item.filename, item.base64);
-        } catch (imgErr) {
-          console.warn('Batch image upload error for ' + item.filename, imgErr);
-        }
-      }
-      state.pendingImagesToUpload = [];
-      try { localStorage.removeItem('daisy_pending_images'); } catch (e) {}
-    }
-
-    // 2. Commit final data/catalog.json
-    showToast('⏳ กำลังบันทึกแคตตาล็อกสินค้าขึ้น GitHub...', 5000);
-    const nowIso = new Date().toISOString();
-    localStorage.setItem('daisy_updated_at', nowIso);
-    const payload = {
-      shopConfig,
-      categories,
-      products,
-      updatedAt: nowIso
-    };
-
-    const res = await syncToGitHubWithToken(token, payload);
-    if (res && res.success) {
-      localStorage.removeItem('daisy_has_pending_changes');
-      updateSyncStatusBadge(false);
-      showToast('🎉 ซิงค์การเปลี่ยนแปลงทั้งหมดขึ้น GitHub เรียบร้อยแล้วค่ะ! 🚀', 6000);
-    }
-  } catch (err) {
-    console.error('Batch sync error:', err);
-    updateSyncStatusBadge(true);
-    showToast('⚠️ การซิงค์ขึ้น GitHub ขัดข้อง: ' + err.message, 5000);
-    throw err;
-  } finally {
-    isBatchSyncing = false;
   }
 }
 
@@ -1262,7 +1262,52 @@ async function loadCentralData() {
     let data = null;
     let sourcePath = './data/catalog.json';
 
-    // 1. If on GitHub Pages, try GitHub Live API first (0-second real-time, bypasses deployment lag!)
+    // 1. Try Supabase first (Instant 0-second real-time database!)
+    const sb = getSupabase();
+    if (sb) {
+      try {
+        const [prodRes, catRes, shopRes] = await Promise.all([
+          sb.from('products').select('*').order('display_order', { ascending: true }),
+          sb.from('categories').select('*').order('display_order', { ascending: true }),
+          sb.from('shop_config').select('*').eq('id', 1).maybeSingle()
+        ]);
+
+        if (prodRes && prodRes.data && prodRes.data.length > 0) {
+          products = prodRes.data.map(p => ({
+            ...p,
+            badges: Array.isArray(p.badges) ? p.badges : (typeof p.badges === 'string' ? JSON.parse(p.badges) : [])
+          }));
+          if (catRes && catRes.data && catRes.data.length > 0) {
+            categories = catRes.data;
+          }
+          if (shopRes && shopRes.data) {
+            shopConfig = {
+              ...shopConfig,
+              ...shopRes.data
+            };
+          }
+
+          localStorage.setItem('daisy_products_v2', JSON.stringify(products));
+          localStorage.setItem('daisy_categories_v2', JSON.stringify(categories));
+          localStorage.setItem('daisy_shop_config_v2', JSON.stringify(shopConfig));
+
+          updateShopDisplays();
+          renderCategoryNav();
+          populateCategorySelect();
+          buildFlipbookPages();
+          renderGridProducts();
+          renderAdminProducts();
+          renderAdminCategories();
+          updateSyncStatusBadge(false);
+          console.log(`🌸 Central catalog synced successfully from Supabase (${products.length} products)`);
+          return true;
+        }
+      } catch (sbErr) {
+        console.warn('Supabase load notice:', sbErr);
+      }
+    }
+
+    // 2. If on GitHub Pages, try GitHub Live API (fallback)
     const isGitHubPages = window.location.hostname.includes('github.io');
     if (isGitHubPages) {
       try {
@@ -1393,174 +1438,41 @@ async function loadCentralData() {
 }
 
 // Update Sync Status Banner in Admin Studio
-function updateSyncStatusBadge(isUnsynced) {
+function updateSyncStatusBadge(isOffline) {
   const bar = document.getElementById('adminSyncNotificationBar');
   const icon = document.getElementById('syncStatusIcon');
   const title = document.getElementById('syncStatusTitle');
   const subtitle = document.getElementById('syncStatusSubtitle');
-  const btn = document.getElementById('btnQuickSyncLive');
 
   if (!bar) return;
 
-  const ghToken = localStorage.getItem('daisy_github_token');
-
-  if (isUnsynced) {
+  if (isOffline) {
     bar.style.display = 'flex';
     bar.style.background = '#fffbeb';
     bar.style.borderColor = '#fde68a';
-    if (icon) icon.textContent = '⚠️';
+    if (icon) icon.textContent = '💾';
     if (title) {
-      title.textContent = 'มีการเปลี่ยนแปลงสินค้าที่ยังไม่ได้ส่งขึ้นเว็บจริง';
+      title.textContent = 'บันทึกลงในเครื่องแล้ว (โหมดออฟไลน์)';
       title.style.color = '#92400e';
     }
     if (subtitle) {
-      subtitle.textContent = ghToken 
-        ? 'ระบบจะส่งขึ้น GitHub ให้อัตโนมัติเมื่อปิดหน้าต่าง Admin หรือกดปุ่มด้านขวาเพื่อส่งทันที' 
-        : 'ข้อมูลบันทึกในเครื่องนี้แล้ว แต่ลูกค้าบนเว็บจริงจะยังไม่เห็นจนกว่าจะกดส่ง';
+      subtitle.textContent = 'ระบบจะเชื่อมต่อและซิงค์กับ Supabase เมื่อกลับมาออนไลน์';
       subtitle.style.color = '#b45309';
-    }
-    if (btn) {
-      btn.style.display = 'inline-flex';
-      btn.innerHTML = '<span>🚀 ส่งขึ้นเว็บจริงให้ลูกค้าเห็น</span>';
-      btn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
     }
   } else {
     bar.style.display = 'flex';
     bar.style.background = '#f0fdf4';
     bar.style.borderColor = '#bbf7d0';
-    if (icon) icon.textContent = '✅';
+    if (icon) icon.textContent = '⚡';
     if (title) {
-      title.textContent = 'ข้อมูลเชื่อมต่อกับเว็บจริงเรียบร้อยแล้ว';
+      title.textContent = 'ระบบ Real-time: เชื่อมต่อฐานข้อมูล Supabase เรียบร้อยแล้ว';
       title.style.color = '#166534';
     }
     if (subtitle) {
-      subtitle.textContent = 'บันทึกขึ้น GitHub เรียบร้อยแล้ว (หากเพิ่งบันทึก กรุณารอประมาณ 30 วินาทีเพื่อให้เว็บอัปเดตข้อมูลนะคะ) 🌸';
+      subtitle.textContent = 'ข้อมูลและรูปภาพที่แก้ไขจะอัปเดตบนเว็บทันที 0 วินาที 🌸';
       subtitle.style.color = '#15803d';
     }
-    if (btn) {
-      btn.style.display = 'none';
-    }
   }
-}
-
-// Quick Sync Action from Notification Banner
-async function triggerQuickSyncLive() {
-  const ghToken = localStorage.getItem('daisy_github_token') || DEFAULT_GITHUB_TOKEN;
-  if (ghToken && ghToken.trim() !== '') {
-    showToast('⏳ กำลังส่งข้อมูลขึ้น GitHub...');
-    try {
-      await batchSyncToGitHub(ghToken.trim());
-      return;
-    } catch (e) {
-      console.warn('Sync failed:', e);
-      alert('การซิงค์ขัดข้อง: ' + e.message + '\nกรุณาตรวจสอบว่า Token ยังใช้งานได้');
-    }
-  }
-
-  // If no token or sync failed, switch to Tab 4 with focus
-  const exportTabBtn = document.querySelector('.admin-tab-btn[data-tab="tab-export"]');
-  if (exportTabBtn) exportTabBtn.click();
-  const tokenInput = document.getElementById('githubTokenInput');
-  if (tokenInput) {
-    tokenInput.focus();
-    tokenInput.style.borderColor = '#f59e0b';
-    tokenInput.style.boxShadow = '0 0 0 3px rgba(245, 158, 11, 0.3)';
-    setTimeout(() => {
-      tokenInput.style.borderColor = '';
-      tokenInput.style.boxShadow = '';
-    }, 2500);
-  }
-}
-
-// GitHub Token Storage & UI Helpers
-function loadGithubToken() {
-  let token = localStorage.getItem('daisy_github_token');
-  if (!token || token.trim() === '') {
-    token = DEFAULT_GITHUB_TOKEN;
-    try {
-      localStorage.setItem('daisy_github_token', token);
-    } catch (e) {}
-  }
-  const input = document.getElementById('githubTokenInput');
-  if (input) input.value = token;
-  return token;
-}
-
-async function saveGithubTokenAndSync() {
-  const input = document.getElementById('githubTokenInput');
-  const token = input ? input.value.trim() : '';
-  if (!token) {
-    alert('กรุณากรอก GitHub Personal Access Token ก่อนครับ');
-    return;
-  }
-  localStorage.setItem('daisy_github_token', token);
-  showToast('⏳ กำลังซิงค์ข้อมูลขึ้น GitHub...');
-
-  try {
-    await batchSyncToGitHub(token);
-  } catch (err) {
-    console.error('GitHub sync failed:', err);
-    alert('การซิงค์ขึ้น GitHub ล้มเหลว: ' + err.message + '\n\nคำแนะนำ: กรุณาตรวจสอบว่า Token มีสิทธิ์ "repo" หรือ "Contents (read and write)"');
-  }
-}
-
-async function syncToGitHubWithToken(token, payload) {
-  const owner = '9sathapornoffice-droid';
-  const repo = 'Daisy-Day';
-
-  async function commitFileToGitHub(filePath, commitMsg) {
-    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
-    let sha = null;
-    try {
-      const checkRes = await fetch(apiUrl, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/vnd.github.v3+json'
-        }
-      });
-      if (checkRes.ok) {
-        const data = await checkRes.json();
-        sha = data.sha;
-      }
-    } catch (e) {}
-
-    const jsonStr = JSON.stringify(payload, null, 2);
-    const utf8Bytes = new TextEncoder().encode(jsonStr);
-    let binaryStr = '';
-    const chunkSize = 8192;
-    for (let i = 0; i < utf8Bytes.length; i += chunkSize) {
-      binaryStr += String.fromCharCode.apply(null, utf8Bytes.subarray(i, i + chunkSize));
-    }
-    const base64Content = btoa(binaryStr);
-
-    const body = {
-      message: commitMsg,
-      content: base64Content,
-      branch: 'main'
-    };
-    if (sha) body.sha = sha;
-
-    const putRes = await fetch(apiUrl, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    });
-
-    if (!putRes.ok) {
-      const errData = await putRes.json().catch(() => ({}));
-      throw new Error(errData.message || `HTTP status ${putRes.status}`);
-    }
-  }
-
-  const timeStr = new Date().toLocaleString('th-TH');
-  // Commit directly to primary catalog file (Single fast commit, no duplicate queue wait)
-  await commitFileToGitHub('data/catalog.json', `Daisy Day Admin: Update catalog [${timeStr}]`);
-
-  return { success: true };
 }
 
 function exportCatalogJson() {
@@ -1685,6 +1597,14 @@ function deleteProduct(productId) {
   if (!confirm(`คุณต้องการลบสินค้า "${prod.name}" ใช่หรือไม่?`)) return;
 
   products = products.filter(p => p.id !== productId);
+
+  const sb = getSupabase();
+  if (sb) {
+    sb.from('products').delete().eq('id', productId).then(() => {
+      console.log('🗑️ Deleted product from Supabase:', productId);
+    }).catch(e => console.warn('Supabase delete error:', e));
+  }
+
   persistDataCentrally('ลบสินค้าเรียบร้อยแล้ว 🗑️', false);
 
   renderAdminProducts();
@@ -1754,53 +1674,7 @@ function compressImageFile(file, maxWidth = 1200, quality = 0.82) {
   });
 }
 
-// Upload Image File directly to GitHub assets/images/
-async function uploadImageFileToGitHub(token, filename, base64Data) {
-  const owner = '9sathapornoffice-droid';
-  const repo = 'Daisy-Day';
-  const filePath = `assets/images/${filename}`;
-  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
 
-  let sha = null;
-  try {
-    const checkRes = await fetch(apiUrl, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/vnd.github.v3+json'
-      }
-    });
-    if (checkRes.ok) {
-      const data = await checkRes.json();
-      sha = data.sha;
-    }
-  } catch (e) {}
-
-  const pureBase64 = base64Data.replace(/^data:image\/[a-zA-Z]+;base64,/, '');
-  const body = {
-    message: `Daisy Day Admin: Upload product image ${filename}`,
-    content: pureBase64,
-    branch: 'main'
-  };
-  if (sha) body.sha = sha;
-
-  const res = await fetch(apiUrl, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
-
-  if (res.ok) {
-    const fullUrl = `https://9sathapornoffice-droid.github.io/Daisy-Day/${filePath}`;
-    return { success: true, url: filePath, fullUrl: fullUrl };
-  } else {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || `HTTP ${res.status}`);
-  }
-}
 
 // Setup Product Image Upload Listener & Link Conversion
 function setupProductImageUpload() {
@@ -1834,28 +1708,54 @@ function setupProductImageUpload() {
       try {
         const compressedBase64 = await compressImageFile(file);
 
-        // 1. Try local server upload API (/api/upload)
+        // 1. Try Supabase Storage upload directly!
+        const sb = getSupabase();
         let uploadedUrl = null;
-        try {
-          const res = await fetch('/api/upload', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              filename: file.name,
-              imageBase64: compressedBase64
-            })
-          });
-          if (res.ok) {
-            const data = await res.json();
-            if (data.success && data.url) {
-              uploadedUrl = data.url;
+        if (sb) {
+          try {
+            const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+            const cleanName = `prod-${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${ext}`;
+            const { data: uploadData, error: uploadErr } = await sb.storage
+              .from('product-images')
+              .upload(cleanName, file, { cacheControl: '3600', upsert: true });
+
+            if (!uploadErr && uploadData) {
+              const { data: publicData } = sb.storage.from('product-images').getPublicUrl(cleanName);
+              if (publicData && publicData.publicUrl) {
+                uploadedUrl = publicData.publicUrl;
+                console.log('⚡ Image uploaded directly to Supabase Storage CDN:', uploadedUrl);
+              }
+            } else if (uploadErr) {
+              console.warn('Supabase Storage upload notice:', uploadErr.message);
             }
+          } catch (sbImgErr) {
+            console.warn('Supabase image upload failed:', sbImgErr);
           }
-        } catch (serverErr) {
-          // Local server not reachable
         }
 
-        // 2. Prepare clean filename for GitHub assets/images/
+        // 2. Try local server upload API (/api/upload)
+        if (!uploadedUrl) {
+          try {
+            const res = await fetch('/api/upload', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                filename: file.name,
+                imageBase64: compressedBase64
+              })
+            });
+            if (res.ok) {
+              const data = await res.json();
+              if (data.success && data.url) {
+                uploadedUrl = data.url;
+              }
+            }
+          } catch (serverErr) {
+            // Local server not reachable
+          }
+        }
+
+        // 3. Fallback: clean filename for GitHub assets/images/
         if (!uploadedUrl) {
           const cleanFileName = 'prod-' + Date.now() + '.jpg';
           uploadedUrl = `assets/images/${cleanFileName}`;
@@ -1962,6 +1862,13 @@ function deleteCategory(catId) {
   categories = categories.filter(c => c.id !== catId);
   if (state.activeCategory === catId) state.activeCategory = 'all';
 
+  const sb = getSupabase();
+  if (sb) {
+    sb.from('categories').delete().eq('id', catId).then(() => {
+      console.log('🗑️ Deleted category from Supabase:', catId);
+    }).catch(e => console.warn('Supabase delete category error:', e));
+  }
+
   persistDataCentrally('ลบหมวดหมู่เรียบร้อยแล้ว 🗑️', false);
 
   renderAdminCategories();
@@ -2055,17 +1962,31 @@ function setupShopImageUploads() {
       try {
         const compressed = await compressImageFile(file, 800, 0.85);
         let link = null;
-        try {
-          const res = await fetch('/api/upload', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filename: 'logo-' + file.name, imageBase64: compressed })
-          });
-          if (res.ok) {
-            const data = await res.json();
-            if (data.success && data.url) link = data.url;
-          }
-        } catch (e) {}
+        const sb = getSupabase();
+        if (sb) {
+          try {
+            const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+            const cleanName = `logo-${Date.now()}.${ext}`;
+            const { data: upData, error: upErr } = await sb.storage.from('product-images').upload(cleanName, file, { cacheControl: '3600', upsert: true });
+            if (!upErr && upData) {
+              const { data: pubData } = sb.storage.from('product-images').getPublicUrl(cleanName);
+              if (pubData && pubData.publicUrl) link = pubData.publicUrl;
+            }
+          } catch (e) {}
+        }
+        if (!link) {
+          try {
+            const res = await fetch('/api/upload', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ filename: 'logo-' + file.name, imageBase64: compressed })
+            });
+            if (res.ok) {
+              const data = await res.json();
+              if (data.success && data.url) link = data.url;
+            }
+          } catch (e) {}
+        }
 
         const finalUrl = link || compressed;
         if (logoPreview) logoPreview.src = finalUrl;
@@ -2107,17 +2028,31 @@ function setupShopImageUploads() {
       try {
         const compressed = await compressImageFile(file, 1400, 0.85);
         let link = null;
-        try {
-          const res = await fetch('/api/upload', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filename: 'banner-' + file.name, imageBase64: compressed })
-          });
-          if (res.ok) {
-            const data = await res.json();
-            if (data.success && data.url) link = data.url;
-          }
-        } catch (e) {}
+        const sb = getSupabase();
+        if (sb) {
+          try {
+            const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+            const cleanName = `banner-${Date.now()}.${ext}`;
+            const { data: upData, error: upErr } = await sb.storage.from('product-images').upload(cleanName, file, { cacheControl: '3600', upsert: true });
+            if (!upErr && upData) {
+              const { data: pubData } = sb.storage.from('product-images').getPublicUrl(cleanName);
+              if (pubData && pubData.publicUrl) link = pubData.publicUrl;
+            }
+          } catch (e) {}
+        }
+        if (!link) {
+          try {
+            const res = await fetch('/api/upload', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ filename: 'banner-' + file.name, imageBase64: compressed })
+            });
+            if (res.ok) {
+              const data = await res.json();
+              if (data.success && data.url) link = data.url;
+            }
+          } catch (e) {}
+        }
 
         const finalUrl = link || compressed;
         if (bannerPreview) bannerPreview.src = finalUrl;
@@ -2206,9 +2141,8 @@ function initApp() {
   setupShopImageUploads();
   initAdminTabs();
   createFloatingPetals();
-  loadGithubToken();
 
-  // Load central data asynchronously from data/catalog.json or catalog.json
+  // Load central data asynchronously from Supabase or data/catalog.json
   loadCentralData();
 
   // Refresh data automatically when user switches back to this tab
