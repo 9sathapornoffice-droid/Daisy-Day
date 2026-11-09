@@ -354,7 +354,7 @@ try {
 // Realistic Book Flip Sound Effect (Pixabay / Freesound Community)
 class SoundFX {
   constructor() {
-    this.soundSrc = 'assets/sound/freesound_community-one-page-book-flip-101928.mp3';
+    this.soundSrc = './assets/sound/freesound_community-one-page-book-flip-101928.mp3';
     this.audioPool = [];
     this.poolSize = 4;
     this.poolIndex = 0;
