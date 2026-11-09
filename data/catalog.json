@@ -200,23 +200,7 @@
         "พร้อมส่ง"
       ],
       "image": "assets/images/prod-1794230929556.jpg"
-    },
-    {
-      "id": 12,
-      "name": "tt3",
-      "nameTh": "tt3",
-      "sku": "SB-012",
-      "price": 79,
-      "category": "single",
-      "tag": "สินค้าใหม่ ✨",
-      "description": "",
-      "meaning": "มอบความสุขและความสดใส",
-      "badges": [
-        "แฮนด์เมด",
-        "พร้อมส่ง"
-      ],
-      "image": "assets/images/prod-1794231438474.jpg"
     }
   ],
-  "updatedAt": "2026-11-09T13:37:28.233Z"
+  "updatedAt": "2026-11-09T13:43:36.132Z"
 }
