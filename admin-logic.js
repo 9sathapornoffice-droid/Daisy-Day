@@ -262,10 +262,23 @@ function getProductPublicImageUrl(product) {
   return '';
 }
 
+// Local in-memory preview cache for new images (0s instant rendering before Git push)
+const localImagePreviewMap = {};
+
 // Fallback for images before GitHub Pages redeploys (Loads instantly from raw.githubusercontent.com in 0s)
 function handleImageFallback(img) {
   if (!img) return;
   const currentSrc = img.src || '';
+
+  // 1. Check local image preview map (0s instant preview before git commit)
+  for (const [key, base64] of Object.entries(localImagePreviewMap)) {
+    if (currentSrc.includes(key)) {
+      img.src = base64;
+      return;
+    }
+  }
+
+  // 2. If pointing to assets/images/ on GitHub Pages, try raw.githubusercontent.com
   if (currentSrc.includes('assets/images/') && !currentSrc.includes('raw.githubusercontent.com')) {
     const filename = currentSrc.split('/').pop().split('?')[0];
     img.src = `https://raw.githubusercontent.com/9sathapornoffice-droid/Daisy-Day/main/assets/images/${filename}`;
@@ -291,8 +304,24 @@ const state = {
   flipbookPages: [],
   soundEnabled: true,
   selectedProductForModal: null,
-  currentEditorImageBase64: ''
+  currentEditorImageBase64: '',
+  pendingImagesToUpload: []
 };
+
+// Restore unsynced pending images from localStorage
+try {
+  const savedPendingImages = localStorage.getItem('daisy_pending_images');
+  if (savedPendingImages) {
+    state.pendingImagesToUpload = JSON.parse(savedPendingImages);
+    if (Array.isArray(state.pendingImagesToUpload)) {
+      state.pendingImagesToUpload.forEach(item => {
+        if (item.filename && item.base64) {
+          localImagePreviewMap[`assets/images/${item.filename}`] = item.base64;
+        }
+      });
+    }
+  }
+} catch (e) {}
 
 // Web Audio Paper Sound Effect
 class SoundFX {
@@ -950,12 +979,26 @@ function adminLogout() {
   showToast('ออกจากระบบแอดมินเรียบร้อยแล้ว 👋');
 }
 
-function closeAdminModal() {
+async function closeAdminModal() {
   const modal = document.getElementById('adminModal');
   if (!modal) return;
   modal.classList.remove('active', 'open');
   if (window.location.hash === '#admin') {
     history.replaceState(null, null, window.location.pathname);
+  }
+
+  // Check if there are pending changes to batch sync to GitHub
+  const hasPending = localStorage.getItem('daisy_has_pending_changes') === 'true' || 
+                     (state.pendingImagesToUpload && state.pendingImagesToUpload.length > 0);
+  const ghToken = localStorage.getItem('daisy_github_token') || DEFAULT_GITHUB_TOKEN;
+
+  if (hasPending && ghToken && ghToken.trim() !== '') {
+    showToast('⏳ ปิดหน้าต่างแอดมินแล้ว กำลังส่งข้อมูลขึ้น GitHub ทีเดียวให้ค่ะ...', 4000);
+    try {
+      await batchSyncToGitHub(ghToken.trim());
+    } catch (err) {
+      console.warn('Batch sync on modal close error:', err);
+    }
   }
 }
 
@@ -1100,8 +1143,8 @@ function closeProductEditorModal() {
 // Default GitHub Token for 1-Click Live Sync
 const DEFAULT_GITHUB_TOKEN = '';
 
-// Central persistence engine (Saves to LocalStorage + Local Server Disk + GitHub Cloud)
-async function persistDataCentrally(customToastMessage) {
+// Central persistence engine (Saves to LocalStorage + Local Server Disk immediately; GitHub syncs on modal close or manual button)
+async function persistDataCentrally(customToastMessage, shouldSyncGit = false) {
   const nowIso = new Date().toISOString();
   localStorage.setItem('daisy_updated_at', nowIso);
   localStorage.setItem('daisy_has_pending_changes', 'true');
@@ -1123,7 +1166,6 @@ async function persistDataCentrally(customToastMessage) {
   }
 
   let autoSavedToServer = false;
-  let autoSavedToGitHub = false;
 
   // 2. Auto-save to local server disk (data/catalog.json and app.js)
   try {
@@ -1134,38 +1176,83 @@ async function persistDataCentrally(customToastMessage) {
     });
     if (res.ok) {
       autoSavedToServer = true;
-      localStorage.removeItem('daisy_has_pending_changes');
       console.log('✅ Centrally saved to local disk (data/catalog.json, catalog.json & app.js)');
     }
   } catch (e) {
     // Not running on local server or network offline
   }
 
-  // 3. Auto-save to GitHub repository if GitHub Token is present
-  const ghToken = localStorage.getItem('daisy_github_token') || DEFAULT_GITHUB_TOKEN;
-  if (ghToken && ghToken.trim() !== '') {
-    try {
-      const ghRes = await syncToGitHubWithToken(ghToken.trim(), payload);
-      if (ghRes && ghRes.success) {
-        autoSavedToGitHub = true;
-        localStorage.removeItem('daisy_has_pending_changes');
-      }
-    } catch (err) {
-      console.warn('GitHub auto-sync error:', err);
+  // 3. Update sync banner in admin studio (informs user that changes will sync on close)
+  updateSyncStatusBadge(true);
+
+  if (shouldSyncGit) {
+    const ghToken = localStorage.getItem('daisy_github_token') || DEFAULT_GITHUB_TOKEN;
+    if (ghToken && ghToken.trim() !== '') {
+      await batchSyncToGitHub(ghToken.trim());
+      return;
     }
   }
 
-  // Update sync banner in admin studio
-  updateSyncStatusBadge(!autoSavedToGitHub);
-
   if (customToastMessage) {
-    if (autoSavedToGitHub) {
-      showToast(`${customToastMessage} • ซิงค์ขึ้น GitHub เรียบร้อย (กรุณารอประมาณ 30 วินาทีเพื่อให้ข้อมูลอัปเดตบนเว็บจริงนะคะ) 🚀`, 5000);
-    } else if (autoSavedToServer) {
-      showToast(`${customToastMessage} • บันทึกลงส่วนกลางในเครื่องเรียบร้อย 💾`);
+    if (autoSavedToServer) {
+      showToast(`${customToastMessage} • บันทึกลงเครื่องแล้ว (จะซิงค์ขึ้น GitHub เมื่อปิดหน้าต่าง Admin) 💾`);
     } else {
-      showToast(`${customToastMessage} ✨ (อย่าลืมกดปุ่ม "ส่งขึ้นเว็บจริง" ด้านบนนะคะ)`);
+      showToast(`${customToastMessage} ✨ (จะซิงค์ขึ้น GitHub เมื่อปิดหน้าต่าง Admin)`);
     }
+  }
+}
+
+// Batch Sync Engine: Uploads all pending images and updates catalog.json in a single GitHub commit
+let isBatchSyncing = false;
+async function batchSyncToGitHub(token) {
+  if (isBatchSyncing) {
+    console.log('⏳ Batch sync already running, skipping duplicate.');
+    return;
+  }
+  if (!token || token.trim() === '') return;
+  isBatchSyncing = true;
+
+  try {
+    // 1. Upload any pending images first
+    if (state.pendingImagesToUpload && state.pendingImagesToUpload.length > 0) {
+      const count = state.pendingImagesToUpload.length;
+      showToast(`⏳ กำลังอัปโหลดรูปภาพ (${count} รูป) ขึ้น GitHub...`, 5000);
+      const pendingList = [...state.pendingImagesToUpload];
+      for (const item of pendingList) {
+        try {
+          await uploadImageFileToGitHub(token, item.filename, item.base64);
+        } catch (imgErr) {
+          console.warn('Batch image upload error for ' + item.filename, imgErr);
+        }
+      }
+      state.pendingImagesToUpload = [];
+      try { localStorage.removeItem('daisy_pending_images'); } catch (e) {}
+    }
+
+    // 2. Commit final data/catalog.json
+    showToast('⏳ กำลังบันทึกแคตตาล็อกสินค้าขึ้น GitHub...', 5000);
+    const nowIso = new Date().toISOString();
+    localStorage.setItem('daisy_updated_at', nowIso);
+    const payload = {
+      shopConfig,
+      categories,
+      products,
+      updatedAt: nowIso
+    };
+
+    const res = await syncToGitHubWithToken(token, payload);
+    if (res && res.success) {
+      localStorage.removeItem('daisy_has_pending_changes');
+      updateSyncStatusBadge(false);
+      showToast('🎉 ซิงค์การเปลี่ยนแปลงทั้งหมดขึ้น GitHub เรียบร้อยแล้วค่ะ! 🚀', 6000);
+    }
+  } catch (err) {
+    console.error('Batch sync error:', err);
+    updateSyncStatusBadge(true);
+    showToast('⚠️ การซิงค์ขึ้น GitHub ขัดข้อง: ' + err.message, 5000);
+    throw err;
+  } finally {
+    isBatchSyncing = false;
   }
 }
 
@@ -1175,20 +1262,48 @@ async function loadCentralData() {
     let data = null;
     let sourcePath = './data/catalog.json';
 
-    // 1. If on GitHub Pages, try raw.githubusercontent.com first for instant real-time live data
-    // (Bypasses the 30-90s delay of GitHub Pages static redeployment!)
+    // 1. If on GitHub Pages, try GitHub Live API first (0-second real-time, bypasses deployment lag!)
     const isGitHubPages = window.location.hostname.includes('github.io');
     if (isGitHubPages) {
       try {
-        const rawRes = await fetch(`https://raw.githubusercontent.com/9sathapornoffice-droid/Daisy-Day/main/data/catalog.json?v=${Date.now()}`, { cache: 'no-store' });
-        if (rawRes.ok) {
-          const rawData = await rawRes.json();
-          if (rawData && Array.isArray(rawData.products)) {
-            data = rawData;
-            sourcePath = 'GitHub Raw (Real-time)';
+        const ghToken = localStorage.getItem('daisy_github_token');
+        const headers = { 'Accept': 'application/vnd.github.v3+json' };
+        if (ghToken && ghToken.trim() !== '') {
+          headers['Authorization'] = `Bearer ${ghToken.trim()}`;
+        }
+        const apiRes = await fetch(`https://api.github.com/repos/9sathapornoffice-droid/Daisy-Day/contents/data/catalog.json?ref=main&t=${Date.now()}`, {
+          headers,
+          cache: 'no-store'
+        });
+        if (apiRes.ok) {
+          const apiObj = await apiRes.json();
+          if (apiObj && apiObj.content) {
+            const binary = atob(apiObj.content.replace(/\s/g, ''));
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+            const decoded = new TextDecoder('utf-8').decode(bytes);
+            const parsed = JSON.parse(decoded);
+            if (parsed && Array.isArray(parsed.products)) {
+              data = parsed;
+              sourcePath = 'GitHub Live API (0s Real-time)';
+            }
           }
         }
       } catch (e) {}
+
+      // Fallback: GitHub Raw CDN
+      if (!data) {
+        try {
+          const rawRes = await fetch(`https://raw.githubusercontent.com/9sathapornoffice-droid/Daisy-Day/main/data/catalog.json?v=${Date.now()}`, { cache: 'no-store' });
+          if (rawRes.ok) {
+            const rawData = await rawRes.json();
+            if (rawData && Array.isArray(rawData.products)) {
+              data = rawData;
+              sourcePath = 'GitHub Raw (Real-time)';
+            }
+          }
+        } catch (e) {}
+      }
     }
 
     // 2. Fetch ./data/catalog.json
@@ -1300,7 +1415,7 @@ function updateSyncStatusBadge(isUnsynced) {
     }
     if (subtitle) {
       subtitle.textContent = ghToken 
-        ? 'กดปุ่มด้านขวาเพื่อซิงค์ข้อมูลขึ้น GitHub ให้ลูกค้าเห็นทันที' 
+        ? 'ระบบจะส่งขึ้น GitHub ให้อัตโนมัติเมื่อปิดหน้าต่าง Admin หรือกดปุ่มด้านขวาเพื่อส่งทันที' 
         : 'ข้อมูลบันทึกในเครื่องนี้แล้ว แต่ลูกค้าบนเว็บจริงจะยังไม่เห็นจนกว่าจะกดส่ง';
       subtitle.style.color = '#b45309';
     }
@@ -1333,19 +1448,9 @@ async function triggerQuickSyncLive() {
   const ghToken = localStorage.getItem('daisy_github_token') || DEFAULT_GITHUB_TOKEN;
   if (ghToken && ghToken.trim() !== '') {
     showToast('⏳ กำลังส่งข้อมูลขึ้น GitHub...');
-    const payload = {
-      shopConfig,
-      categories,
-      products,
-      updatedAt: new Date().toISOString()
-    };
     try {
-      const res = await syncToGitHubWithToken(ghToken.trim(), payload);
-      if (res && res.success) {
-        updateSyncStatusBadge(false);
-        showToast('🎉 ส่งข้อมูลขึ้น GitHub สำเร็จแล้ว! กรุณารอประมาณ 30 วินาทีเพื่อให้ข้อมูลอัปเดตบนเว็บจริงนะคะ 🚀', 5000);
-        return;
-      }
+      await batchSyncToGitHub(ghToken.trim());
+      return;
     } catch (e) {
       console.warn('Sync failed:', e);
       alert('การซิงค์ขัดข้อง: ' + e.message + '\nกรุณาตรวจสอบว่า Token ยังใช้งานได้');
@@ -1391,19 +1496,8 @@ async function saveGithubTokenAndSync() {
   localStorage.setItem('daisy_github_token', token);
   showToast('⏳ กำลังซิงค์ข้อมูลขึ้น GitHub...');
 
-  const payload = {
-    shopConfig,
-    categories,
-    products,
-    updatedAt: new Date().toISOString()
-  };
-
   try {
-    const res = await syncToGitHubWithToken(token, payload);
-    if (res && res.success) {
-      updateSyncStatusBadge(false);
-      showToast('🎉 บันทึกขึ้น GitHub สำเร็จแล้ว! กรุณารอประมาณ 30 วินาทีเพื่อให้ข้อมูลอัปเดตบนเว็บจริง 🚀', 5000);
-    }
+    await batchSyncToGitHub(token);
   } catch (err) {
     console.error('GitHub sync failed:', err);
     alert('การซิงค์ขึ้น GitHub ล้มเหลว: ' + err.message + '\n\nคำแนะนำ: กรุณาตรวจสอบว่า Token มีสิทธิ์ "repo" หรือ "Contents (read and write)"');
@@ -1494,7 +1588,7 @@ function exportCatalogJson() {
 }
 
 // Save Product (Add or Edit)
-function saveProductData() {
+async function saveProductData() {
   const idVal = document.getElementById('editProductId').value;
   const name = document.getElementById('editProductName').value.trim();
   const nameTh = document.getElementById('editProductNameTh').value.trim();
@@ -1509,8 +1603,24 @@ function saveProductData() {
     return;
   }
 
+  // Queue pending image for batch sync upon modal close
+  if (state.pendingProductImage && state.pendingProductImage.base64) {
+    if (!state.pendingImagesToUpload) state.pendingImagesToUpload = [];
+    state.pendingImagesToUpload.push({
+      filename: state.pendingProductImage.filename,
+      base64: state.pendingProductImage.base64
+    });
+    localImagePreviewMap[state.pendingProductImage.url] = state.pendingProductImage.base64;
+    try {
+      localStorage.setItem('daisy_pending_images', JSON.stringify(state.pendingImagesToUpload));
+    } catch (e) {}
+  }
+
   const urlInput = document.getElementById('editProductImageUrl');
   let imgUrl = urlInput ? urlInput.value.trim() : '';
+  if (!imgUrl && state.pendingProductImage) {
+    imgUrl = state.pendingProductImage.url;
+  }
   if (!imgUrl) {
     imgUrl = state.currentEditorImageBase64;
   }
@@ -1518,6 +1628,8 @@ function saveProductData() {
     const preview = document.getElementById('editProductImgPreview');
     imgUrl = preview ? preview.src : '';
   }
+
+  state.pendingProductImage = null;
 
   if (idVal) {
     // Edit existing product
@@ -1561,9 +1673,9 @@ function saveProductData() {
   buildFlipbookPages();
   renderGridProducts();
 
-  // Save centrally in background (LocalStorage + Local Server + GitHub)
+  // Save locally & on server immediately (GitHub sync occurs when closing admin modal)
   const actionMsg = idVal ? 'แก้ไขข้อมูลสินค้าเรียบร้อยแล้ว 🌸' : 'เพิ่มสินค้าใหม่เรียบร้อยแล้ว ✨';
-  persistDataCentrally(actionMsg);
+  persistDataCentrally(actionMsg, false);
 }
 
 // Delete Product
@@ -1573,7 +1685,7 @@ function deleteProduct(productId) {
   if (!confirm(`คุณต้องการลบสินค้า "${prod.name}" ใช่หรือไม่?`)) return;
 
   products = products.filter(p => p.id !== productId);
-  persistDataCentrally('ลบสินค้าเรียบร้อยแล้ว 🗑️');
+  persistDataCentrally('ลบสินค้าเรียบร้อยแล้ว 🗑️', false);
 
   renderAdminProducts();
   buildFlipbookPages();
@@ -1591,7 +1703,7 @@ function moveProduct(productId, direction) {
   products[index] = products[targetIndex];
   products[targetIndex] = temp;
 
-  persistDataCentrally('สลับลำดับสินค้าเรียบร้อย ↕️');
+  persistDataCentrally('สลับลำดับสินค้าเรียบร้อย ↕️', false);
   renderAdminProducts();
   buildFlipbookPages();
   renderGridProducts();
@@ -1649,12 +1761,27 @@ async function uploadImageFileToGitHub(token, filename, base64Data) {
   const filePath = `assets/images/${filename}`;
   const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
 
+  let sha = null;
+  try {
+    const checkRes = await fetch(apiUrl, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+    if (checkRes.ok) {
+      const data = await checkRes.json();
+      sha = data.sha;
+    }
+  } catch (e) {}
+
   const pureBase64 = base64Data.replace(/^data:image\/[a-zA-Z]+;base64,/, '');
   const body = {
     message: `Daisy Day Admin: Upload product image ${filename}`,
     content: pureBase64,
     branch: 'main'
   };
+  if (sha) body.sha = sha;
 
   const res = await fetch(apiUrl, {
     method: 'PUT',
@@ -1728,40 +1855,34 @@ function setupProductImageUpload() {
           // Local server not reachable
         }
 
-        // 2. If not saved via local server, try GitHub API if token available
+        // 2. Prepare clean filename for GitHub assets/images/
         if (!uploadedUrl) {
-          const ghToken = localStorage.getItem('daisy_github_token');
-          if (ghToken && ghToken.trim() !== '') {
-            try {
-              const cleanFileName = 'prod-' + Date.now() + '.jpg';
-              const ghRes = await uploadImageFileToGitHub(ghToken.trim(), cleanFileName, compressedBase64);
-              if (ghRes && ghRes.url) {
-                uploadedUrl = ghRes.url;
-              }
-            } catch (ghErr) {
-              console.warn('GitHub image upload failed:', ghErr);
-            }
-          }
+          const cleanFileName = 'prod-' + Date.now() + '.jpg';
+          uploadedUrl = `assets/images/${cleanFileName}`;
         }
+
+        const fileNameToSave = uploadedUrl.split('/').pop();
+        state.pendingProductImage = {
+          filename: fileNameToSave,
+          base64: compressedBase64,
+          url: uploadedUrl
+        };
+        localImagePreviewMap[uploadedUrl] = compressedBase64;
 
         // 3. Fallback: If no server/GitHub, use optimized compressed data URL
         const finalUrl = uploadedUrl || compressedBase64;
 
-        state.currentEditorImageBase64 = finalUrl;
-        if (urlInput) urlInput.value = finalUrl;
-        if (preview) preview.src = finalUrl;
+        state.currentEditorImageBase64 = compressedBase64;
+        if (urlInput) urlInput.value = uploadedUrl;
+        if (preview) preview.src = compressedBase64;
 
         if (statusBadge) {
           statusBadge.style.display = 'inline';
           statusBadge.style.color = '#16a34a';
-          statusBadge.textContent = uploadedUrl ? '✓ ได้ลิงก์ไฟล์แล้ว' : '✓ บีบอัดรูปพร้อมใช้งาน';
+          statusBadge.textContent = '✓ ได้ลิงก์ไฟล์แล้ว (พร้อมบันทึก)';
         }
 
-        if (uploadedUrl) {
-          showToast(`📷 แปลงไฟล์เป็นลิงก์สำเร็จ: ${uploadedUrl}`);
-        } else {
-          showToast('📷 อัปโหลดรูปเรียบร้อย (บีบอัดขนาดเบา) ✨');
-        }
+        showToast(`📷 แปลงรูปเป็นลิงก์ ${uploadedUrl} เรียบร้อย ✨`);
       } catch (err) {
         console.error('Image upload failed:', err);
         showToast('เกิดข้อผิดพลาดในการโหลดรูปภาพ: ' + err.message);
@@ -1821,7 +1942,7 @@ function addNewCategory() {
   const id = 'cat_' + Date.now().toString(36);
 
   categories.push({ id, name, icon });
-  persistDataCentrally('เพิ่มหมวดหมู่ใหม่สำเร็จแล้ว 📂');
+  persistDataCentrally('เพิ่มหมวดหมู่ใหม่สำเร็จแล้ว 📂', false);
 
   input.value = '';
   renderAdminCategories();
@@ -1841,7 +1962,7 @@ function deleteCategory(catId) {
   categories = categories.filter(c => c.id !== catId);
   if (state.activeCategory === catId) state.activeCategory = 'all';
 
-  persistDataCentrally('ลบหมวดหมู่เรียบร้อยแล้ว 🗑️');
+  persistDataCentrally('ลบหมวดหมู่เรียบร้อยแล้ว 🗑️', false);
 
   renderAdminCategories();
   renderCategoryNav();
@@ -1902,7 +2023,7 @@ function saveShopSettings() {
     shopConfig.banner = bannerPreview.src;
   }
 
-  persistDataCentrally('บันทึกข้อมูลร้านค้าเรียบร้อยแล้ว 💖');
+  persistDataCentrally('บันทึกข้อมูลร้านค้าเรียบร้อยแล้ว 💖', false);
 
   updateShopDisplays();
   buildFlipbookPages();
