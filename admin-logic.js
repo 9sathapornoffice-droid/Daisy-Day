@@ -340,48 +340,36 @@ try {
   }
 } catch (e) {}
 
-// Web Audio Paper Sound Effect
+// Realistic Book Flip Sound Effect (Pixabay / Freesound Community)
 class SoundFX {
   constructor() {
-    this.ctx = null;
+    this.soundSrc = 'assets/sound/freesound_community-one-page-book-flip-101928.mp3';
+    this.audioPool = [];
+    this.poolSize = 4;
+    this.poolIndex = 0;
+    try {
+      for (let i = 0; i < this.poolSize; i++) {
+        const a = new Audio(this.soundSrc);
+        a.preload = 'auto';
+        a.volume = 0.6;
+        this.audioPool.push(a);
+      }
+    } catch (e) {}
   }
-  init() {
-    if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      this.ctx = new AudioCtx();
-    }
-  }
+
   playFlip() {
     if (!state.soundEnabled) return;
     try {
-      this.init();
-      if (!this.ctx) return;
-      if (this.ctx.state === 'suspended') this.ctx.resume();
-
-      const bufferSize = this.ctx.sampleRate * 0.18;
-      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-      const output = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.35));
+      if (this.audioPool && this.audioPool.length > 0) {
+        const audio = this.audioPool[this.poolIndex];
+        this.poolIndex = (this.poolIndex + 1) % this.audioPool.length;
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+      } else {
+        const a = new Audio(this.soundSrc);
+        a.volume = 0.6;
+        a.play().catch(() => {});
       }
-
-      const whiteNoise = this.ctx.createBufferSource();
-      whiteNoise.buffer = buffer;
-
-      const filter = this.ctx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.value = 1400;
-      filter.Q.value = 1.2;
-
-      const gain = this.ctx.createGain();
-      gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.18);
-
-      whiteNoise.connect(filter);
-      filter.connect(gain);
-      gain.connect(this.ctx.destination);
-
-      whiteNoise.start();
     } catch (e) {
       console.warn('Audio play error:', e);
     }
